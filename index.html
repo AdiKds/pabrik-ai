@@ -681,7 +681,7 @@ var current=localStorage.getItem('pabrik_theme')||'cyber';
 // Toggle between dark and light
 if(current==='light'){setTheme('cyber')}else{setTheme('light')}
 }
-function openThemeSelector(){document.getElementById('themeModal').classList.add('active')}
+function openThemeSelector(){document.getElementById('themeModal').classList.add('active');renderThemeList()}
 function closeThemeSelector(){document.getElementById('themeModal').classList.remove('active')}
 function renderThemeList(){
 var container=document.getElementById('themeList');
@@ -700,7 +700,7 @@ container.innerHTML=html;
 }
 
 // MODALS
-function openHelp(){document.getElementById('helpModal').classList.add('active');renderThemeList()}
+function openHelp(){document.getElementById('helpModal').classList.add('active')}
 function closeHelp(){document.getElementById('helpModal').classList.remove('active')}
 function openProgrammer(){document.getElementById('progModal').classList.add('active')}
 function closeProgrammer(){document.getElementById('progModal').classList.remove('active')}
