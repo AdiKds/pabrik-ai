@@ -48,11 +48,11 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:0}
 .orbit-ring-2{inset:-15px;border-left-color:#10b981;border-right-color:#eab308;animation:spin3D2 4s linear infinite}
 .orbit-ring-3{inset:-35px;border-top-color:#8b5cf6;border-bottom-color:transparent;animation:spin3D3 5s linear infinite}
 .cs::-webkit-scrollbar{width:6px;height:6px}.cs::-webkit-scrollbar-track{background:transparent}.cs::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-.tool-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;transform:translateY(0);opacity:1}.tool-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 8px 30px rgba(6,182,212,0.2)}
+.tool-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;transform:translateY(0);opacity:1}.tool-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 8px 30px rgba(6,182,212,0.2)}
 .tool-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 8px 30px rgba(6,182,212,0.2)}
 .tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent2),transparent);opacity:0;transition:opacity .3s}
 .tool-card:hover::before{opacity:1}
-.tool-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.tool-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 .rich-link{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;transition:all .2s;margin:2px}
 .rich-link.wiki{color:#10b981;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3)}
 .rich-link.wiki:hover{background:rgba(16,185,129,0.25);color:#fff}
@@ -123,11 +123,11 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:0}
 <!-- MAIN -->
 <main class="flex-1 max-w-7xl mx-auto w-full px-4 py-4 relative z-10">
 <div id="homeView" style="position:relative;z-index:5">
-<div class="text-center mb-6 mt-2">
-<h1 class="text-xl sm:text-3xl font-black mb-2" style="font-family:Orbitron;color:var(--accent2);text-shadow:0 0 20px rgba(0,255,255,0.3)"><i class="fa-solid fa-microchip mr-2"></i>PABRIK AI PRO</h1>
+<div class="text-center mb-3 mt-1">
+<h1 class="text-lg sm:text-2xl font-black mb-1" style="font-family:Orbitron;color:var(--accent2);text-shadow:0 0 20px rgba(0,255,255,0.3)"><i class="fa-solid fa-microchip mr-2"></i>PABRIK AI PRO</h1>
 <p class="text-xs sm:text-sm" style="color:var(--dim);font-family:Rajdhani">20+ Tools AI untuk Copywriting, Akademik, Visual & Bisnis</p>
 </div>
-<div class="flex flex-wrap justify-center gap-2 mb-5">
+<div class="flex flex-wrap justify-center gap-1.5 mb-3">
 <button onclick="filterTools('all')" id="tab-all" class="px-3 sm:px-4 py-2 rounded-lg text-xs font-bold border transition-all" style="background:var(--accent);color:#fff;border-color:var(--accent);font-family:Orbitron"><i class="fa-solid fa-layer-group mr-1"></i>SEMUA</button>
 <button onclick="filterTools('copywriting')" id="tab-copywriting" class="px-3 sm:px-4 py-2 rounded-lg text-xs font-bold border transition-all" style="background:var(--card);color:var(--dim);border-color:var(--border);font-family:Orbitron"><i class="fa-solid fa-pen-nib mr-1"></i>COPY</button>
 <button onclick="filterTools('akademik')" id="tab-akademik" class="px-3 sm:px-4 py-2 rounded-lg text-xs font-bold border transition-all" style="background:var(--card);color:var(--dim);border-color:var(--border);font-family:Orbitron"><i class="fa-solid fa-graduation-cap mr-1"></i>AKADEMIK</button>
@@ -135,7 +135,7 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:0}
 <button onclick="filterTools('bisnis')" id="tab-bisnis" class="px-3 sm:px-4 py-2 rounded-lg text-xs font-bold border transition-all" style="background:var(--card);color:var(--dim);border-color:var(--border);font-family:Orbitron"><i class="fa-solid fa-chart-line mr-1"></i>BISNIS</button>
 <button onclick="openChat()" class="px-3 sm:px-4 py-2 rounded-lg text-xs font-bold border transition-all" style="background:rgba(168,85,247,0.2);color:#c084fc;border-color:rgba(168,85,247,0.4);font-family:Orbitron"><i class="fa-solid fa-robot mr-1"></i>AI CHAT</button>
 </div>
-<div id="toolsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" style="position:relative;z-index:5"></div>
+<div id="toolsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2" style="position:relative;z-index:5"></div>
 
 <!-- REQUEST FITUR BARU -->
 <div class="mt-8 rounded-2xl border p-5" style="background:var(--card);border-color:var(--border)">
@@ -367,7 +367,7 @@ var grid=document.getElementById('toolsGrid');grid.innerHTML='';
 var list=filter==='all'?aiTools:aiTools.filter(function(t){return t.cat===filter});
 list.forEach(function(t,i){
 var d=document.createElement('div');d.className='tool-card';d.onclick=function(){openTool(t.id)};
-d.innerHTML='<div class="flex items-start gap-3"><div class="tool-icon" style="background:'+t.color+'22;color:'+t.color+'"><i class="fa-solid '+t.icon+'"></i></div><div class="flex-1 min-w-0"><div class="font-bold text-sm mb-1" style="color:var(--text)">'+t.name+'</div><div class="text-xs" style="color:var(--dim)">'+t.desc+'</div><div class="mt-2 text-[10px] font-bold" style="color:'+t.color+';font-family:Orbitron"><i class="fa-solid fa-arrow-right"></i> AKSES TOOL</div></div></div>';
+d.innerHTML='<div class="flex items-start gap-2"><div class="tool-icon" style="background:'+t.color+'22;color:'+t.color+'"><i class="fa-solid '+t.icon+'"></i></div><div class="flex-1 min-w-0"><div class="font-bold text-xs mb-0.5 truncate" style="color:var(--text)">'+t.name+'</div><div class="text-[10px] leading-tight" style="color:var(--dim)">'+t.desc+'</div><div class="mt-1 text-[9px] font-bold" style="color:'+t.color+';font-family:Orbitron"><i class="fa-solid fa-arrow-right"></i> AKSES</div></div></div>';
 grid.appendChild(d);
 });
 }
