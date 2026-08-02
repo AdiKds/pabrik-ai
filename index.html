@@ -135,7 +135,8 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:0}
 <button onclick="filterTools('bisnis')" id="tab-bisnis" class="px-2 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold border transition-all" style="background:var(--card);color:var(--dim);border-color:var(--border);font-family:Orbitron"><i class="fa-solid fa-chart-line mr-1"></i>BISNIS</button>
 <button onclick="openChat()" class="px-2 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold border transition-all" style="background:rgba(168,85,247,0.2);color:#c084fc;border-color:rgba(168,85,247,0.4);font-family:Orbitron"><i class="fa-solid fa-robot mr-1"></i>AI CHAT</button>
 </div>
-<div id="toolsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-1.5" style="position:relative;z-index:5"></div>
+<div class="text-center mb-2 text-[10px]" style="color:var(--dim);font-family:Orbitron"><span id="toolCount">22</span> TOOLS TERSEDIA • GESER UNTUK LIHAT SEMUA</div>
+<div id="toolsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-1.5 cs" style="position:relative;z-index:5;max-height:60vh;overflow-y:auto;padding-bottom:8px"></div>
 
 <!-- REQUEST FITUR BARU -->
 <div class="mt-8 rounded-2xl border p-5" style="background:var(--card);border-color:var(--border)">
@@ -365,6 +366,7 @@ var aiTools=[
 function renderTools(filter){
 var grid=document.getElementById('toolsGrid');grid.innerHTML='';
 var list=filter==='all'?aiTools:aiTools.filter(function(t){return t.cat===filter});
+var cnt=document.getElementById('toolCount');if(cnt)cnt.textContent=list.length;
 list.forEach(function(t,i){
 var d=document.createElement('div');d.className='tool-card';d.onclick=function(){openTool(t.id)};
 d.innerHTML='<div class="flex items-start gap-1.5"><div class="tool-icon" style="background:'+t.color+'22;color:'+t.color+'"><i class="fa-solid '+t.icon+'"></i></div><div class="flex-1 min-w-0"><div class="font-bold text-xs mb-0.5 truncate" style="color:var(--text)">'+t.name+'</div><div class="text-[10px] leading-tight" style="color:var(--dim)">'+t.desc+'</div><div class="mt-1 text-[9px] font-bold" style="color:'+t.color+';font-family:Orbitron"><i class="fa-solid fa-arrow-right"></i> AKSES</div></div></div>';
