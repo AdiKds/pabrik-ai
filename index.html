@@ -115,6 +115,30 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:0}
 <button onclick="openChat()" class="px-3 sm:px-4 py-2 rounded-lg text-xs font-bold border transition-all" style="background:rgba(168,85,247,0.2);color:#c084fc;border-color:rgba(168,85,247,0.4);font-family:Orbitron"><i class="fa-solid fa-robot mr-1"></i>AI CHAT</button>
 </div>
 <div id="toolsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+
+<!-- REQUEST FITUR BARU -->
+<div class="mt-8 rounded-2xl border p-5" style="background:var(--card);border-color:var(--border)">
+<div class="flex items-center gap-2 mb-3">
+<i class="fa-solid fa-lightbulb text-lg" style="color:#fbbf24"></i>
+<h3 class="font-bold text-sm" style="font-family:Orbitron;color:#fbbf24">REQUEST FITUR BARU</h3>
+</div>
+<p class="text-xs mb-3" style="color:var(--dim);font-family:Rajdhani">Ada ide tools AI yang belum tersedia? Ajukan request fitur baru disertai testimoni Anda!</p>
+<textarea id="reqTestimoni" rows="2" placeholder="Tulis testimoni Anda tentang Pabrik AI Pro..." class="w-full p-3 rounded-lg border outline-none text-sm mb-2 cs" style="background:var(--bg2);border-color:var(--border);color:var(--text);resize:vertical"></textarea>
+<textarea id="reqFitur" rows="3" placeholder="Jelaskan fitur AI yang Anda butuhkan..." class="w-full p-3 rounded-lg border outline-none text-sm mb-2 cs" style="background:var(--bg2);border-color:var(--border);color:var(--text);resize:vertical"></textarea>
+<input id="reqNama" type="text" placeholder="Nama Anda" class="w-full p-3 rounded-lg border outline-none text-sm mb-3" style="background:var(--bg2);border-color:var(--border);color:var(--text)">
+<button onclick="submitRequest()" class="px-6 py-2.5 rounded-lg font-bold text-sm w-full" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#000;font-family:Orbitron"><i class="fa-solid fa-paper-plane mr-1"></i>KIRIM TESTIMONI & REQUEST</button>
+<div id="reqStatus" class="hidden mt-3 text-xs p-3 rounded-lg text-center" style="font-family:Orbitron"></div>
+</div>
+
+<!-- HUBUNGI ADMIN -->
+<div class="mt-4 rounded-2xl border p-5 text-center" style="background:var(--card);border-color:var(--border)">
+<div class="flex items-center gap-2 mb-3 justify-center">
+<i class="fa-brands fa-whatsapp text-xl" style="color:#25d366"></i>
+<h3 class="font-bold text-sm" style="font-family:Orbitron;color:#25d366">BUTUH BANTUAN?</h3>
+</div>
+<p class="text-xs mb-4" style="color:var(--dim);font-family:Rajdhani">Punya pertanyaan atau kendala teknis? Hubungi Admin via WhatsApp</p>
+<a href="https://wa.me/6282231036047?text=Halo%20Admin%20Pabrik%20AI%20Pro,%20saya%20butuh%20bantuan" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm no-underline transition-all hover:scale-105" style="background:#25d366;color:#fff;font-family:Orbitron"><i class="fa-brands fa-whatsapp text-lg"></i>HUBUNGI ADMIN (WhatsApp)</a>
+</div>
 </div>
 <div id="toolView" class="hidden">
 <button onclick="showHome()" class="mb-4 px-4 py-2 rounded-lg text-xs font-bold border transition-all hover:scale-105" style="background:var(--card);border-color:var(--border);color:var(--accent2);font-family:Orbitron"><i class="fa-solid fa-arrow-left mr-1"></i>KEMBALI</button>
@@ -432,6 +456,23 @@ rec.start();recognizing=true;micBtn.classList.add('mic-listening');chatInput.pla
 }else{rec.stop();recognizing=false;micBtn.classList.remove('mic-listening');chatInput.placeholder='Tanya AI apa saja...';}
 rec.onresult=function(e){var t=e.results[0][0].transcript;chatInput.value=t;sendChat();};
 rec.onend=function(){recognizing=false;micBtn.classList.remove('mic-listening');chatInput.placeholder='Tanya AI apa saja...';};
+}
+
+// REQUEST FEATURE
+function submitRequest(){
+var testimoni=document.getElementById('reqTestimoni').value.trim();
+var fitur=document.getElementById('reqFitur').value.trim();
+var nama=document.getElementById('reqNama').value.trim();
+var status=document.getElementById('reqStatus');
+if(!testimoni||!fitur||!nama){status.className='mt-3 text-xs p-3 rounded-lg text-center';status.style.background='rgba(239,68,68,0.15)';status.style.color='#ef4444';status.style.fontFamily='Orbitron';status.textContent='Mohon isi semua kolom!';status.classList.remove('hidden');return;}
+var msg='*REQUEST FITUR BARU - PABRIK AI PRO*%0A%0A*Nama:* '+encodeURIComponent(nama)+'%0A*Testimoni:* '+encodeURIComponent(testimoni)+'%0A*Request Fitur:* '+encodeURIComponent(fitur);
+var waUrl='https://wa.me/6282231036047?text='+msg;
+status.className='mt-3 text-xs p-3 rounded-lg text-center';status.style.background='rgba(34,197,94,0.15)';status.style.color='#4ade80';status.style.fontFamily='Orbitron';
+status.innerHTML='<i class="fa-solid fa-check-circle"></i> Request berhasil! Mengarahkan ke WhatsApp...';
+status.classList.remove('hidden');
+setTimeout(function(){window.open(waUrl,'_blank');},800);
+document.getElementById('reqTestimoni').value='';document.getElementById('reqFitur').value='';document.getElementById('reqNama').value='';
+setTimeout(function(){status.classList.add('hidden');},5000);
 }
 
 // NAVIGATION
