@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pabrik AI Pro - Multi-Tool AI Dashboard</title>
+<meta name="description" content="Pabrik AI Pro - 20+ Tools AI untuk Copywriting, Akademik, Visual & Bisnis">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2300010a'/%3E%3Ccircle cx='32' cy='32' r='22' fill='none' stroke='%2306b6d4' stroke-width='2.5' opacity='0.5'/%3E%3Ccircle cx='32' cy='32' r='15' fill='none' stroke='%2300ffff' stroke-width='2' opacity='0.7'/%3E%3Cpath d='M 32 16 L 32 20 M 32 44 L 48 32 M 16 32 L 20 32 M 44 32 L 48 32' stroke='%2300ffff' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='32' r='3' fill='%2300ffff'/%3E%3C/svg%3E">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Plus Jakarta Sans','sans-serif'],orbitron:['Orbitron','sans-serif']}}}}</script>
+<style>
+:root{--accent:#06b6d4;--accent2:#00ffff;--bg:#001018;--bg2:#0a1929;--card:rgba(10,25,41,0.85);--border:rgba(6,182,212,0.3);--text:#e0f7fa;--dim:rgba(0,255,255,0.6)}
+html.light{--accent:#0891b2;--accent2:#06b6d4;--bg:#f0f9ff;--bg2:#e0f2fe;--card:rgba(255,255,255,0.9);--border:rgba(8,145,178,0.3);--text:#0c4a6e;--dim:rgba(8,145,178,0.6)}
+body{background:var(--bg);color:var(--text)}
+canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:0}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin3D1{0%{transform:rotateX(65deg) rotateY(0deg) rotateZ(0deg)}100%{transform:rotateX(65deg) rotateY(360deg) rotateZ(360deg)}}
+@keyframes spin3D2{0%{transform:rotateX(45deg) rotateY(45deg) rotateZ(0deg)}100%{transform:rotateX(45deg) rotateY(45deg) rotateZ(-360deg)}}
+@keyframes spin3D3{0%{transform:rotateX(75deg) rotateY(-45deg) rotateZ(0deg)}100%{transform:rotateX(75deg) rotateY(-45deg) rotateZ(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.orbit-container{perspective:1200px;transform-style:preserve-3d}
+.orbit-ring-1,.orbit-ring-2,.orbit-ring-3{position:absolute;border-radius:50%;border:2px solid transparent;transform-style:preserve-3d}
+.orbit-ring-1{inset:-25px;border-top-color:#06b6d4;border-bottom-color:#3b82f6;box-shadow:0 0 15px rgba(6,182,212,0.3);animation:spin3D1 3s linear infinite}
+.orbit-ring-2{inset:-15px;border-left-color:#10b981;border-right-color:#eab308;animation:spin3D2 4s linear infinite}
+.orbit-ring-3{inset:-35px;border-top-color:#8b5cf6;border-bottom-color:transparent;animation:spin3D3 5s linear infinite}
+.cs::-webkit-scrollbar{width:6px;height:6px}.cs::-webkit-scrollbar-track{background:transparent}.cs::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.tool-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .3s;animation:fadeIn .4s;opacity:0;position:relative;overflow:hidden}
+.tool-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 8px 30px rgba(6,182,212,0.2)}
+.tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent2),transparent);opacity:0;transition:opacity .3s}
+.tool-card:hover::before{opacity:1}
+.tool-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.rich-link{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;transition:all .2s;margin:2px}
+.rich-link.wiki{color:#10b981;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3)}
+.rich-link.wiki:hover{background:rgba(16,185,129,0.25);color:#fff}
+.rich-link.google{color:#3b82f6;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3)}
+.rich-link.google:hover{background:rgba(59,130,246,0.25);color:#fff}
+.rich-link.copilot{color:#ef4444;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3)}
+.rich-link.copilot:hover{background:rgba(239,68,68,0.25);color:#fff}
+.hidden{display:none!important}
+.clink{display:inline-flex;align-items:center;gap:4px;font-family:'Orbitron';font-size:9px;text-decoration:none;padding:5px 10px;border-radius:6px;transition:all .2s;white-space:nowrap}
+.modal-overlay{position:fixed;inset:0;z-index:9990;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s;pointer-events:none}
+.modal-overlay.active{opacity:1;pointer-events:auto}
+.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;max-width:90vw;max-height:85vh;overflow-y:auto;padding:24px;transform:scale(0.95);transition:transform .3s}
+.modal-overlay.active .modal-box{transform:scale(1)}
+.mic-listening{animation:pulse 1s infinite;background-color:rgba(239,68,68,0.2)!important;border-color:#ef4444!important;color:#ef4444!important}
+.tool-result{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:12px;white-space:pre-wrap;font-size:13px;line-height:1.7;max-height:400px;overflow-y:auto}
+.tool-loading{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent2);border-radius:50%;animation:spin 1s linear infinite}
+.sc-content{transition:opacity 1s ease}
+</style>
+</head>
+<body class="min-h-screen flex flex-col transition-colors duration-300 relative pb-20">
+<div id="earth-3d-bg" style="position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.22;transition:opacity .8s"></div>
+
+<!-- BOOT -->
+<div id="bootLoader" class="fixed inset-0 z-[10000] flex flex-col items-center justify-center" style="background:#020617;transition:opacity .7s">
+<div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(6,182,212,0.1),transparent 70%);pointer-events:none"></div>
+<div class="relative z-10 text-center px-6 max-w-md w-full">
+<div class="mb-12 bg-slate-900/60 backdrop-blur-lg border border-cyan-500/40 rounded-2xl p-5 shadow-[0_0_30px_rgba(6,182,212,0.15)]">
+<span id="bootDate" class="text-emerald-400 font-bold text-xs tracking-widest uppercase block mb-1" style="font-family:Orbitron">MEMUAT HARI...</span>
+<span id="bootTime" class="text-4xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-purple-400" style="font-family:Orbitron">00:00:00</span>
+</div>
+<div class="relative w-28 h-28 mb-10 mx-auto orbit-container flex items-center justify-center">
+<div class="orbit-ring-1"></div><div class="orbit-ring-2"></div><div class="orbit-ring-3"></div>
+<div class="absolute inset-0 rounded-full bg-slate-900/80 border border-cyan-500/60 shadow-[0_0_40px_rgba(6,182,212,0.4)] flex items-center justify-center">
+<i class="fa-solid fa-microchip text-cyan-400 text-4xl animate-pulse" style="filter:drop-shadow(0 0 15px rgba(6,182,212,0.8))"></i>
+</div>
+</div>
+<h2 class="text-2xl text-cyan-400 mb-3" style="font-family:Orbitron;letter-spacing:4px">PABRIK AI</h2>
+<p id="bootStatus" class="text-cyan-400 text-xs tracking-widest animate-pulse" style="font-family:Orbitron">&gt;_ MEMUAT DATABASE AI TOOLS...</p>
+<div class="w-64 h-1.5 bg-slate-800 mt-6 rounded-full overflow-hidden mx-auto">
+<div id="bootBar" class="h-full bg-gradient-to-r from-cyan-500 via-teal-400 to-yellow-500 w-0 transition-all duration-300 relative">
+<div class="absolute top-0 right-0 bottom-0 w-4 bg-white/50 blur-sm animate-pulse"></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- HEADER -->
+<header class="sticky top-0 z-40 backdrop-blur-md border-b" style="background:rgba(2,6,23,0.85);border-color:var(--border)">
+<div class="max-w-7xl mx-auto px-3 py-2 flex items-center justify-between gap-2">
+<div class="flex items-center gap-2 cursor-pointer flex-shrink-0" onclick="showHome()">
+<i class="fa-solid fa-microchip text-lg" style="color:var(--accent2)"></i>
+<div><span class="font-bold text-xs sm:text-sm" style="font-family:Orbitron;color:var(--accent2)">PABRIK AI</span>
+<span class="text-[7px] px-1 py-0.5 rounded border ml-1" style="background:rgba(6,182,212,0.15);border-color:var(--border);color:#fbbf24;font-family:Orbitron">PRO</span></div>
+</div>
+<div class="flex flex-col items-center">
+<span id="hdrDate" class="font-bold text-[9px] sm:text-xs tracking-widest uppercase" style="font-family:Orbitron;color:#10b981">MEMUAT...</span>
+<span id="hdrTime" class="font-black text-base sm:text-2xl tracking-widest" style="font-family:Orbitron;color:var(--accent2);text-shadow:0 0 8px rgba(0,255,255,0.5)">00:00:00</span>
+</div>
+<div class="flex items-center gap-1.5 flex-shrink-0">
+<button onclick="toggleTheme()" id="themeBtn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg border flex items-center justify-center transition-all hover:scale-110" style="background:var(--card);border-color:var(--border);color:var(--accent2)"><i class="fa-solid fa-moon text-sm" id="themeIcon"></i></button>
+<button onclick="openHelp()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg border flex items-center justify-center transition-all hover:scale-110" style="background:var(--card);border-color:var(--border);color:#fbbf24"><i class="fa-solid fa-circle-question text-sm"></i></button>
+<button onclick="openProgrammer()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg border flex items-center justify-center transition-all hover:scale-110" style="background:var(--card);border-color:var(--border);color:#a78bfa"><i class="fa-solid fa-user-gear text-sm"></i></button>
+</div>
+</div>
+</header>
+
+<!-- MAIN -->
+<main class="flex-1 max-w-7xl mx-auto w-full px-4 py-4 relative z-10">
+<div id="homeView">
+<div class="text-center mb-6 mt-2">
+<h1 class="text-xl sm:text-3xl font-black mb-2" style="font-family:Orbitron;color:var(--accent2);text-shadow:0 0 20px rgba(0,255,255,0.3)"><i class="fa-solid fa-microchip mr-2"></i>PABRIK AI PRO</h1>
+<p class="text-xs sm:text-sm" style="color:var(--dim);font-family:Rajdhani">20+ Tools AI untuk Copywriting, Akademik, Visual & Bisnis</p>
+</div>
+<div class="flex flex-wrap justify-center gap-2 mb-5">
+<button onclick="filterTools('all')" id="tab-all" class="px-3 sm:px-4 py-2 rounded-lg text-xs font-bold border transition-all" style="background:var(--accent);color:#fff;border-color:var(--accent);font-family:Orbitron"><i class="fa-solid fa-layer-group mr-1"></i>SEMUA</button>
+<button onclick="filterTools('copywriting')" id="tab-copywriting" class="px-3 sm:px-4 py-2 rounded-lg text-xs font-bold border transition-all" style="background:var(--card);color:var(--dim);border-color:var(--border);font-family:Orbitron"><i class="fa-solid fa-pen-nib mr-1"></i>COPY</button>
+<button onclick="filterTools('akademik')" id="tab-akademik" class="px-3 sm:px-4 py-2 rounded-lg text-xs font-bold border transition-all" style="background:var(--card);color:var(--dim);border-color:var(--border);font-family:Orbitron"><i class="fa-solid fa-graduation-cap mr-1"></i>AKADEMIK</button>
+<button onclick="filterTools('visual')" id="tab-visual" class="px-3 sm:px-4 py-2 rounded-lg text-xs font-bold border transition-all" style="background:var(--card);color:var(--dim);border-color:var(--border);font-family:Orbitron"><i class="fa-solid fa-image mr-1"></i>VISUAL</button>
+<button onclick="filterTools('bisnis')" id="tab-bisnis" class="px-3 sm:px-4 py-2 rounded-lg text-xs font-bold border transition-all" style="background:var(--card);color:var(--dim);border-color:var(--border);font-family:Orbitron"><i class="fa-solid fa-chart-line mr-1"></i>BISNIS</button>
+<button onclick="openChat()" class="px-3 sm:px-4 py-2 rounded-lg text-xs font-bold border transition-all" style="background:rgba(168,85,247,0.2);color:#c084fc;border-color:rgba(168,85,247,0.4);font-family:Orbitron"><i class="fa-solid fa-robot mr-1"></i>AI CHAT</button>
+</div>
+<div id="toolsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+</div>
+<div id="toolView" class="hidden">
+<button onclick="showHome()" class="mb-4 px-4 py-2 rounded-lg text-xs font-bold border transition-all hover:scale-105" style="background:var(--card);border-color:var(--border);color:var(--accent2);font-family:Orbitron"><i class="fa-solid fa-arrow-left mr-1"></i>KEMBALI</button>
+<div id="toolContent"></div>
+</div>
+<div id="chatView" class="hidden">
+<button onclick="showHome()" class="mb-4 px-4 py-2 rounded-lg text-xs font-bold border transition-all hover:scale-105" style="background:var(--card);border-color:var(--border);color:var(--accent2);font-family:Orbitron"><i class="fa-solid fa-arrow-left mr-1"></i>KEMBALI</button>
+<div class="rounded-2xl border p-4" style="background:var(--card);border-color:var(--border)">
+<div class="flex items-center gap-2 mb-3">
+<i class="fa-solid fa-robot text-lg" style="color:#c084fc"></i>
+<span class="font-bold text-sm" style="font-family:Orbitron;color:#c084fc">AI CHATBOT</span>
+<span class="text-[8px] px-2 py-0.5 rounded" style="background:rgba(168,85,247,0.2);color:#c084fc;font-family:Orbitron">WIKI+GOOGLE</span>
+</div>
+<div id="chatMessages" class="min-h-[200px] max-h-[400px] overflow-y-auto cs mb-3"></div>
+<div class="flex gap-2">
+<button id="chatMicBtn" onclick="toggleVoice()" class="w-10 h-10 rounded-lg border flex items-center justify-center flex-shrink-0 transition-all" style="background:var(--card);border-color:var(--border);color:var(--accent2)"><i class="fa-solid fa-microphone text-sm"></i></button>
+<input id="chatInput" type="text" placeholder="Tanya AI apa saja..." class="flex-1 px-4 py-2.5 rounded-lg border outline-none text-sm" style="background:var(--card);border-color:var(--border);color:var(--text)" onkeydown="if(event.key==='Enter')sendChat()">
+<button onclick="sendChat()" class="px-4 py-2.5 rounded-lg border font-bold text-sm flex-shrink-0" style="background:var(--accent);color:#fff;border-color:var(--accent);font-family:Orbitron"><i class="fa-solid fa-paper-plane"></i></button>
+</div>
+</div>
+</div>
+</main>
+
+<!-- FOOTER -->
+<footer class="border-t mt-auto relative z-10" style="background:rgba(2,6,23,0.9);border-color:var(--border)">
+<div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-2">
+<div class="text-center sm:text-left">
+<span class="text-[10px]" style="font-family:Orbitron;color:var(--dim)">Developed by </span>
+<span class="text-xs font-bold" style="font-family:Orbitron;color:var(--accent2);text-shadow:0 0 6px rgba(0,255,255,0.4)">MOHAMAD HARTADI</span>
+</div>
+<div class="flex items-center gap-2 flex-wrap justify-center">
+<a href="https://facebook.com/m.hartadi" target="_blank" class="clink" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.4);color:#60a5fa"><i class="fa-brands fa-facebook"></i>FB</a>
+<a href="https://newbieonline7.blogspot.com/" target="_blank" class="clink" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);color:#fbbf24"><i class="fa-solid fa-blog"></i>BLOG</a>
+<a href="https://wa.me/6282231036047" target="_blank" class="clink" style="background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);color:#4ade80"><i class="fa-brands fa-whatsapp"></i>WA</a>
+</div>
+</div>
+</footer>
+
+<!-- SCREENSAVER -->
+<div id="screensaver" class="hidden" onclick="if(event.target===this)deactivateScreensaver()" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.95);overflow:hidden;opacity:0;transition:opacity .5s">
+<button onclick="deactivateScreensaver()" style="position:absolute;top:12px;right:12px;z-index:50;background:rgba(20,20,40,0.8);border:1px solid rgba(0,255,255,0.3);color:rgba(0,255,255,0.6);padding:8px 16px;border-radius:8px;font-size:11px;cursor:pointer;font-family:Orbitron"><i class="fa-solid fa-power-off"></i>TUTUP</button>
+<div style="position:absolute;bottom:8%;left:50%;transform:translateX(-50%);text-align:center;width:90%;max-width:600px;z-index:10">
+<div id="scContent" class="sc-content">
+<div id="scIcon" class="text-3xl mb-3"></div>
+<div id="scCategory" class="text-xs uppercase tracking-widest mb-2" style="font-family:Orbitron;color:#fbbf24;letter-spacing:3px"></div>
+<div id="scArabic" class="mb-2" style="font-family:Amiri,serif;font-size:24px;color:#fbbf24;display:none" dir="rtl"></div>
+<div id="scText" class="text-sm leading-relaxed" style="color:#e0f7fa;font-family:'Plus Jakarta Sans',sans-serif;max-width:500px;margin:0 auto"></div>
+<div id="scSource" class="text-xs mt-2" style="color:rgba(0,255,255,0.4);font-family:Orbitron"></div>
+</div>
+<button id="scReadBtn" onclick="readScreensaverContent()" style="margin-top:16px;background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.5);color:#10b981;padding:8px 20px;border-radius:8px;font-size:11px;cursor:pointer;font-family:Orbitron;letter-spacing:1px"><i class="fa-solid fa-volume-high"></i>BACAKAN</button>
+</div>
+</div>
+
+<!-- MODALS -->
+<div id="helpModal" class="modal-overlay" onclick="if(event.target===this)closeHelp()">
+<div class="modal-box max-w-lg">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold" style="font-family:Orbitron;color:var(--accent2)"><i class="fa-solid fa-circle-question mr-2"></i>BANTUAN</h3>
+<button onclick="closeHelp()" class="w-8 h-8 rounded-lg border flex items-center justify-center" style="border-color:var(--border);color:var(--dim)"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div class="space-y-3 text-sm" style="color:var(--text)">
+<div><i class="fa-solid fa-pen-nib mr-2" style="color:#06b6d4"></i><b>Copywriting</b> - Tools AI untuk copywriting, script, SEO & konten</div>
+<div><i class="fa-solid fa-graduation-cap mr-2" style="color:#10b981"></i><b>Akademik</b> - Tools AI untuk turnitin, jurnal, materi belajar & tugas</div>
+<div><i class="fa-solid fa-image mr-2" style="color:#f59e0b"></i><b>Visual</b> - Tools AI untuk PPT, infografis, banner & product image</div>
+<div><i class="fa-solid fa-chart-line mr-2" style="color:#a78bfa"></i><b>Bisnis</b> - Tools AI untuk TTS, analisis modal, file analyzer & properti</div>
+<div><i class="fa-solid fa-robot mr-2" style="color:#c084fc"></i><b>AI Chat</b> - Tanya AI dengan pencarian Wikipedia & Google</div>
+<div><i class="fa-solid fa-hands-praying mr-2" style="color:#fbbf24"></i><b>Screensaver</b> - Otomatis aktif setelah 2 menit idle</div>
+</div>
+<div class="mt-4 pt-3 border-t text-center text-xs" style="border-color:var(--border);color:var(--dim);font-family:Orbitron">PABRIK AI PRO v1.0 &copy; 2026 Mohamad Hartadi</div>
+</div>
+</div>
+
+<div id="progModal" class="modal-overlay" onclick="if(event.target===this)closeProgrammer()">
+<div class="modal-box max-w-sm text-center">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold" style="font-family:Orbitron;color:var(--accent2)"><i class="fa-solid fa-user-gear mr-2"></i>PROGRAMMER</h3>
+<button onclick="closeProgrammer()" class="w-8 h-8 rounded-lg border flex items-center justify-center" style="border-color:var(--border);color:var(--dim)"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div class="py-4">
+<div class="w-20 h-20 mx-auto mb-3 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,#0a1929,#1a3a5c);border:2px solid var(--accent);box-shadow:0 0 20px rgba(6,182,212,0.3)"><i class="fa-solid fa-user-astronaut text-3xl" style="color:var(--accent2)"></i></div>
+<h4 class="font-bold text-lg" style="font-family:Orbitron;color:var(--accent2)">MOHAMAD HARTADI</h4>
+<p class="text-xs mb-4" style="color:var(--dim);font-family:Rajdhani">Full-Stack Developer & AI Engineer</p>
+<div class="flex justify-center gap-3 flex-wrap">
+<a href="https://facebook.com/m.hartadi" target="_blank" class="clink" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.4);color:#60a5fa"><i class="fa-brands fa-facebook"></i>Facebook</a>
+<a href="https://newbieonline7.blogspot.com/" target="_blank" class="clink" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);color:#fbbf24"><i class="fa-solid fa-blog"></i>Blog</a>
+<a href="https://wa.me/6282231036047" target="_blank" class="clink" style="background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);color:#4ade80"><i class="fa-brands fa-whatsapp"></i>WhatsApp</a>
+</div>
+</div>
+</div>
+</div>
+
+<button onclick="activateScreensaver()" class="fixed bottom-20 right-4 z-30 w-12 h-12 rounded-full border flex items-center justify-center transition-all hover:scale-110" style="background:var(--card);border-color:var(--border);color:#fbbf24;box-shadow:0 4px 20px rgba(0,0,0,0.3)" title="Screensaver"><i class="fa-solid fa-hands-praying text-lg"></i></button>
+<script>
+// 3D EARTH BACKGROUND
+function initBgEarth(){
+if(typeof THREE==='undefined')return;
+var c=document.getElementById('earth-3d-bg');if(!c||c.children.length>0)return;
+var scene=new THREE.Scene();var cam=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,0.1,1000);cam.position.set(3,1.5,7);cam.lookAt(0,0,0);
+var rend=new THREE.WebGLRenderer({antialias:true,alpha:true});rend.setSize(innerWidth,innerHeight);rend.setPixelRatio(Math.min(devicePixelRatio,2));c.appendChild(rend.domElement);
+scene.add(new THREE.AmbientLight(0x222244,0.4));var sun=new THREE.DirectionalLight(0xffffff,1.2);sun.position.set(5,3,5);scene.add(sun);
+var rim=new THREE.DirectionalLight(0x0066ff,0.5);rim.position.set(-5,0,-3);scene.add(rim);
+var tl=new THREE.TextureLoader();
+var globe=new THREE.Mesh(new THREE.SphereGeometry(2.5,64,64),new THREE.MeshStandardMaterial({map:tl.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg'),roughness:0.6,metalness:0.1}));scene.add(globe);
+var clouds=new THREE.Mesh(new THREE.SphereGeometry(2.54,64,64),new THREE.MeshStandardMaterial({map:tl.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_clouds_1024.png'),transparent:true,opacity:0.7,depthWrite:false}));scene.add(clouds);
+scene.add(new THREE.Mesh(new THREE.SphereGeometry(2.7,64,64),new THREE.MeshBasicMaterial({color:0x00aaff,transparent:true,opacity:0.08,side:THREE.BackSide})));
+var sg=new THREE.BufferGeometry();var sp=new Float32Array(3600);for(var i=0;i<3600;i++)sp[i]=(Math.random()-0.5)*200;sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
+var stars=new THREE.Points(sg,new THREE.PointsMaterial({color:0xffffff,size:0.06,transparent:true,opacity:0.6,sizeAttenuation:true}));scene.add(stars);
+var rg=new THREE.RingGeometry(3.5,3.52,128);var r1=new THREE.Mesh(rg,new THREE.MeshBasicMaterial({color:0x00ffff,transparent:true,opacity:0.12,side:THREE.DoubleSide}));r1.rotation.x=Math.PI*0.45;scene.add(r1);
+var r2=new THREE.Mesh(rg.clone(),new THREE.MeshBasicMaterial({color:0x0088ff,transparent:true,opacity:0.08,side:THREE.DoubleSide}));r2.rotation.x=Math.PI*0.6;r2.rotation.z=Math.PI*0.3;scene.add(r2);
+function animate(){requestAnimationFrame(animate);globe.rotation.y+=0.0008;clouds.rotation.y+=0.0011;stars.rotation.y+=0.00015;r1.rotation.z+=0.001;r2.rotation.z-=0.0007;cam.position.x=3+Math.sin(Date.now()*0.00008)*0.5;cam.position.y=1.5+Math.cos(Date.now()*0.00006)*0.3;cam.lookAt(0,0,0);rend.render(scene,cam);}
+animate();addEventListener('resize',function(){cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();rend.setSize(innerWidth,innerHeight);});
+}
+
+// AI TOOLS DATA
+var aiTools=[
+{id:'copy1',cat:'copywriting',icon:'fa-pen-nib',color:'#06b6d4',name:'AI Pembuat Copywriting',desc:'Copymatic - Copywriting sales converting',ph:'Contoh: Buat copywriting untuk produk kopi...',pp:'Anda adalah copywriter profesional. Buat copywriting persuasif untuk: '},
+{id:'copy2',cat:'copywriting',icon:'fa-scroll',color:'#0891b2',name:'AI Content Scriptwriter',desc:'Script video YouTube/TikTok/Reels',ph:'Contoh: Script video 60 detik tips hemat...',pp:'Anda adalah scriptwriter video profesional. Buat script engaging untuk: '},
+{id:'copy3',cat:'copywriting',icon:'fa-magnifying-glass-chart',color:'#0e7490',name:'AI SEO Optimizer',desc:'Optimasi konten untuk SEO Google',ph:'Contoh: Optimasi artikel tentang kopi toraja...',pp:'Anda adalah ahli SEO. Optimasi konten berikut untuk peringkat Google: '},
+{id:'copy4',cat:'copywriting',icon:'fa-file-lines',color:'#06b6d4',name:'AI Konten Profesional',desc:'Artikel blog & konten profesional',ph:'Contoh: Artikel 500 kata tentang digital marketing...',pp:'Anda adalah content writer profesional. Buat artikel profesional tentang: '},
+{id:'aka1',cat:'akademik',icon:'fa-shield-halved',color:'#10b981',name:'AI Turnitin (Plagiasi)',desc:'Cek & parafrase kurangi plagiasi',ph:'Contoh: Parafrase paragraf berikut...',pp:'Anda adalah ahli akademik. Parafrase teks berikut untuk mengurangi plagiasi: '},
+{id:'aka2',cat:'akademik',icon:'fa-book-bookmark',color:'#059669',name:'AI Jurnal Refleksi Harian',desc:'Jurnal refleksi harian otomatis',ph:'Contoh: Jurnal refleksi kegiatan hari ini...',pp:'Anda adalah pembimbing akademik. Buat jurnal refleksi harian tentang: '},
+{id:'aka3',cat:'akademik',icon:'fa-graduation-cap',color:'#047857',name:'AI Jurnal & Scopus Kuliah',desc:'Draft jurnal ilmiah format Scopus',ph:'Contoh: Draft jurnal analisis struktur...',pp:'Anda adalah akademisi. Buat draft jurnal ilmiah format Scopus tentang: '},
+{id:'aka4',cat:'akademik',icon:'fa-chalkboard-user',color:'#10b981',name:'AI Materi Belajar',desc:'Materi ajar TK sampai Kuliah',ph:'Contoh: Materi fotosintesis untuk SMP...',pp:'Anda adalah pendidik profesional. Buat materi belajar yang mudah dipahami tentang: '},
+{id:'aka5',cat:'akademik',icon:'fa-pen-to-square',color:'#059669',name:'AI Asisten Tugas Kuliah',desc:'Bantu kerjakan tugas kuliah',ph:'Contoh: Analisis dampak media sosial...',pp:'Anda adalah asisten akademik. Bantu kerjakan tugas kuliah berikut: '},
+{id:'vis1',cat:'visual',icon:'fa-display',color:'#f59e0b',name:'AI Pembuat PPT',desc:'Presentasi PowerPoint otomatis',ph:'Contoh: Presentasi strategi bisnis 2026...',pp:'Anda adalah desainer presentasi. Buat outline PPT 8-12 slide tentang: '},
+{id:'vis2',cat:'visual',icon:'fa-file-word',color:'#d97706',name:'AI PPT dari Word/txt',desc:'Konversi dokumen jadi slide PPT',ph:'Contoh: Konversi teks jadi 10 slide...',pp:'Anda adalah ahli presentasi. Konversi teks berikut menjadi 10 slide PPT: '},
+{id:'vis3',cat:'visual',icon:'fa-chart-pie',color:'#f59e0b',name:'AI Presentation & Infographic',desc:'Desain presentasi & infografis',ph:'Contoh: Infografis data penduduk...',pp:'Anda adalah desainer infografis. Buat konsep infografis tentang: '},
+{id:'vis4',cat:'visual',icon:'fa-image',color:'#fbbf24',name:'Studio Banner Promosi AI',desc:'Desain banner promosi otomatis',ph:'Contoh: Banner promo diskon 50%...',pp:'Anda adalah desainer banner. Buat konsep banner promosi untuk: '},
+{id:'vis5',cat:'visual',icon:'fa-camera-retro',color:'#d97706',name:'AI Product Image Generator',desc:'Prompt gambar produk AI',ph:'Contoh: Gambar produk kopi di meja kayu...',pp:'Anda adalah product photographer. Buat prompt AI image generator untuk: '},
+{id:'vis6',cat:'visual',icon:'fa-gift-card',color:'#f59e0b',name:'MomentsAI Card Builder',desc:'Kartu ucapan & moments',ph:'Contoh: Kartu ucapan selamat ulang tahun...',pp:'Anda adalah desainer kartu. Buat konsep kartu ucapan yang cantik untuk: '},
+{id:'bis1',cat:'bisnis',icon:'fa-volume-high',color:'#a78bfa',name:'Text to Speech AI',desc:'Konversi teks jadi suara AI',ph:'Contoh: Konversi teks jadi narasi...',pp:'Anda adalah ahli TTS. Buat naskah narasi yang natural untuk: '},
+{id:'bis2',cat:'bisnis',icon:'fa-calculator',color:'#8b5cf6',name:'AI Breakdown Modal & Profit',desc:'Analisis modal dan keuntungan',ph:'Contoh: Analisis modal usaha kuliner 5 juta...',pp:'Anda adalah analis bisnis. Buat breakdown modal dan profit untuk: '},
+{id:'bis3',cat:'bisnis',icon:'fa-file-circle-check',color:'#7c3aed',name:'AI File Analyzer',desc:'Analisis file & dokumen',ph:'Contoh: Analisis isi laporan keuangan...',pp:'Anda adalah analis data. Analisis file/dokumen berikut: '},
+{id:'bis4',cat:'bisnis',icon:'fa-cube',color:'#a78bfa',name:'AI Model Studio',desc:'Buat model bisnis & strategi',ph:'Contoh: Model bisnis subscription SaaS...',pp:'Anda adalah konsultan bisnis. Buat model bisnis untuk: '},
+{id:'bis5',cat:'bisnis',icon:'fa-wand-magic-sparkles',color:'#8b5cf6',name:'AI Studio Pro',desc:'Multi-purpose AI studio',ph:'Contoh: Buat laporan analisis pasar...',pp:'Anda adalah AI assistant serbaguna. Bantu dengan: '},
+{id:'bis6',cat:'bisnis',icon:'fa-house-chimney',color:'#7c3aed',name:'AI Property',desc:'Analisis & valuasi properti',ph:'Contoh: Valuasi rumah 100m2 di Jakarta...',pp:'Anda adalah ahli properti. Buat analisis valuasi untuk: '},
+{id:'bis7',cat:'bisnis',icon:'fa-comments',color:'#a78bfa',name:'AI ChatDigiPro',desc:'Chatbot AI serbaguna',ph:'Contoh: Chat AI tentang topik apa saja...',pp:'Anda adalah asisten AI serbaguna. Jawab pertanyaan tentang: '}
+];
+
+// RENDER TOOLS
+function renderTools(filter){
+var grid=document.getElementById('toolsGrid');grid.innerHTML='';
+var list=filter==='all'?aiTools:aiTools.filter(function(t){return t.cat===filter});
+list.forEach(function(t,i){
+var d=document.createElement('div');d.className='tool-card';d.style.animationDelay=(i*0.04)+'s';d.onclick=function(){openTool(t.id)};
+d.innerHTML='<div class="flex items-start gap-3"><div class="tool-icon" style="background:'+t.color+'22;color:'+t.color+'"><i class="fa-solid '+t.icon+'"></i></div><div class="flex-1 min-w-0"><div class="font-bold text-sm mb-1" style="color:var(--text)">'+t.name+'</div><div class="text-xs" style="color:var(--dim)">'+t.desc+'</div><div class="mt-2 text-[10px] font-bold" style="color:'+t.color+';font-family:Orbitron"><i class="fa-solid fa-arrow-right"></i> AKSES TOOL</div></div></div>';
+grid.appendChild(d);
+});
+}
+function filterTools(cat){
+['all','copywriting','akademik','visual','bisnis'].forEach(function(c){
+var b=document.getElementById('tab-'+c);if(!b)return;
+if(c===cat){b.style.background='var(--accent)';b.style.color='#fff';b.style.borderColor='var(--accent)'}
+else{b.style.background='var(--card)';b.style.color='var(--dim)';b.style.borderColor='var(--border)'}
+});
+renderTools(cat);
+}
+
+// OPEN TOOL
+var currentTool=null;
+function openTool(id){
+currentTool=aiTools.find(function(t){return t.id===id});if(!currentTool)return;
+document.getElementById('homeView').classList.add('hidden');
+document.getElementById('toolView').classList.remove('hidden');
+var tc=document.getElementById('toolContent');
+tc.innerHTML='<div class="rounded-2xl border p-5" style="background:var(--card);border-color:var(--border)">'+
+'<div class="flex items-center gap-3 mb-4"><div class="tool-icon" style="background:'+currentTool.color+'22;color:'+currentTool.color+'"><i class="fa-solid '+currentTool.icon+'"></i></div>'+
+'<div><h2 class="font-bold text-lg" style="font-family:Orbitron;color:'+currentTool.color+'">'+currentTool.name+'</h2><p class="text-xs" style="color:var(--dim)">'+currentTool.desc+'</p></div></div>'+
+'<textarea id="toolInput" rows="5" placeholder="'+currentTool.ph+'" class="w-full p-3 rounded-lg border outline-none text-sm mb-3 cs" style="background:var(--bg2);border-color:var(--border);color:var(--text);resize:vertical"></textarea>'+
+'<button onclick="runTool()" class="px-6 py-2.5 rounded-lg font-bold text-sm" style="background:'+currentTool.color+';color:#fff;font-family:Orbitron"><i class="fa-solid fa-bolt mr-1"></i>GENERATE</button>'+
+'<button onclick="copyResult()" id="copyBtn" class="px-4 py-2.5 rounded-lg border font-bold text-sm ml-2 hidden" style="border-color:var(--border);color:var(--accent2);font-family:Orbitron"><i class="fa-solid fa-copy mr-1"></i>COPY</button>'+
+'<div id="toolResult" class="hidden"></div></div>';
+}
+function runTool(){
+var input=document.getElementById('toolInput').value.trim();if(!input){alert('Mohon isi teks terlebih dahulu');return}
+var resultDiv=document.getElementById('toolResult');
+resultDiv.classList.remove('hidden');
+resultDiv.className='tool-result';
+resultDiv.innerHTML='<div class="text-center"><span class="tool-loading"></span><br><span class="text-xs mt-2 block" style="color:var(--dim)">AI sedang men generate...</span></div>';
+document.getElementById('copyBtn').classList.add('hidden');
+var prompt=currentTool.pp+input+'\n\nBerikan hasil yang detail, profesional, dan siap pakai dalam Bahasa Indonesia.';
+// Try Gemini proxy first
+fetch('https://superagent-1258ff83.base44.app/functions/geminiProxy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:prompt})})
+.then(function(r){return r.json()}).then(function(d){
+var txt=d.text||d.response||d.output||null;
+if(txt){showToolResult(txt)}else{offlineResult(input)}
+}).catch(function(){offlineResult(input)});
+}
+function showToolResult(txt){
+var resultDiv=document.getElementById('toolResult');
+resultDiv.innerHTML=formatRichText(txt);
+document.getElementById('copyBtn').classList.remove('hidden');
+document.getElementById('copyBtn').dataset.result=txt;
+speakResult(txt.substring(0,500));
+}
+function copyResult(){
+var txt=document.getElementById('copyBtn').dataset.result||'';
+navigator.clipboard.writeText(txt).then(function(){alert('Hasil disalin ke clipboard!')});
+}
+function offlineResult(input){
+var result='[MODE OFFLINE]\n\nMaaf, koneksi AI cloud sedang tidak tersedia.\n\nNamun, berikut adalah panduan untuk "'+currentTool.name+'":\n\n1. Tool ini dirancang untuk: '+currentTool.desc+'\n2. Input Anda: '+input.substring(0,200)+'\n3. Hasil AI akan muncul otomatis ketika koneksi tersedia\n\nTips: Pastikan koneksi internet stabil dan coba lagi dalam beberapa saat.';
+var resultDiv=document.getElementById('toolResult');
+resultDiv.innerHTML=formatRichText(result);
+document.getElementById('copyBtn').classList.remove('hidden');
+document.getElementById('copyBtn').dataset.result=result;
+}
+function formatRichText(txt){
+return txt.replace(/\*\*(.*?)\*\*/g,'<span style="color:var(--accent2);font-weight:700">$1</span>').replace(/\*(.*?)\*/g,'<span style="color:#fbbf24;font-style:italic">$1</span>').replace(/\n/g,'<br>');
+}
+
+// CHATBOT
+function openChat(){
+document.getElementById('homeView').classList.add('hidden');
+document.getElementById('toolView').classList.add('hidden');
+document.getElementById('chatView').classList.remove('hidden');
+var msg=document.getElementById('chatMessages');
+if(!msg.innerHTML){
+msg.innerHTML='<div class="text-center text-xs mb-4" style="color:var(--dim);font-family:Orbitron"><i class="fa-solid fa-robot text-2xl mb-2 block" style="color:#c084fc"></i>AI Chatbot dengan Wikipedia & Google Search<br>Tanya apa saja, AI akan mencari jawaban dan memberikan link sumber berwarna-warni</div>';
+}
+}
+function sendChat(){
+var el=document.getElementById('chatInput');var txt=el.value.trim();if(!txt)return;
+el.value='';
+var msg=document.getElementById('chatMessages');
+msg.innerHTML+='<div style="background:linear-gradient(135deg,#0891b2,#06b6d4);color:#fff;border-radius:16px 16px 4px 16px;padding:12px 16px;max-width:85%;margin-left:auto;margin-bottom:12px">'+txt+'</div>';
+msg.scrollTop=msg.scrollHeight;
+var loadId='load-'+Date.now();
+msg.innerHTML+='<div id="'+loadId+'" class="text-xs animate-pulse mb-3" style="color:var(--dim)"><i class="fa-solid fa-earth-asia fa-spin mr-1"></i>Mencari di Wikipedia, Google & Copilot AI...</div>';
+msg.scrollTop=msg.scrollHeight;
+// Search Wikipedia ID
+var wikiUrl='https://id.wikipedia.org/w/api.php?action=query&list=search&srsearch='+encodeURIComponent(txt)+'&format=json&origin=*';
+fetch(wikiUrl).then(function(r){return r.json()}).then(function(d){
+var wikiResults='';
+if(d.query&&d.query.search&&d.query.search.length>0){
+var top=d.query.search[0];
+wikiResults='**'+top.title+'** (Wikipedia ID)\n\n'+top.snippet.replace(/<[^>]+>/g,'')+'...\n';
+// Get more detail
+var detailUrl='https://id.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&titles='+encodeURIComponent(top.title)+'&format=json&origin=*';
+return fetch(detailUrl).then(function(r2){return r2.json()}).then(function(d2){
+var pages=d2.query.pages;var pageId=Object.keys(pages)[0];
+if(pages[pageId].extract)wikiResults=pages[pageId].extract.replace(/<[^>]+>/g,'').substring(0,800);
+return searchWikiEN(txt,wikiResults);
+});
+}
+return searchWikiEN(txt,'');
+}).then(function(finalResults){
+var e=document.getElementById(loadId);if(e)e.remove();
+displayChatReply(txt,finalResults);
+}).catch(function(){
+var e=document.getElementById(loadId);if(e)e.remove();
+displayChatReply(txt,{wikiID:'',wikiEN:'',google:'https://www.google.com/search?q='+encodeURIComponent(txt)});
+});
+}
+
+function searchWikiEN(query,wikiIDResult){
+var url='https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch='+encodeURIComponent(query)+'&format=json&origin=*';
+return fetch(url).then(function(r){return r.json()}).then(function(d){
+var wikiEN='';
+if(d.query&&d.query.search&&d.query.search.length>0){
+var top=d.query.search[0];
+wikiEN='**'+top.title+'** (Wikipedia EN)\n'+top.snippet.replace(/<[^>]+>/g,'')+'...';
+}
+return {wikiID:wikiIDResult,wikiEN:wikiEN,google:'https://www.google.com/search?q='+encodeURIComponent(query)};
+}).catch(function(){
+return {wikiID:wikiIDResult,wikiEN:'',google:'https://www.google.com/search?q='+encodeURIComponent(query)};
+});
+}
+
+function displayChatReply(query,results){
+var msg=document.getElementById('chatMessages');
+var html='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px 16px 16px 4px;padding:14px 16px;max-width:90%;margin-bottom:12px">';
+html+='<div class="text-[9px] mb-2 flex items-center gap-1" style="color:#c084fc;font-family:Orbitron"><i class="fa-solid fa-robot"></i> AI CHATBOT</div>';
+var hasContent=false;
+if(results.wikiID){
+hasContent=true;
+html+='<div class="mb-3"><span class="text-[10px] font-bold uppercase" style="color:#10b981;font-family:Orbitron"><i class="fa-solid fa-book"></i> Wikipedia ID</span><br><div class="text-sm mt-1" style="color:var(--text)">'+formatRichText(results.wikiID)+'</div></div>';
+}
+if(results.wikiEN){
+hasContent=true;
+html+='<div class="mb-3"><span class="text-[10px] font-bold uppercase" style="color:#10b981;font-family:Orbitron"><i class="fa-solid fa-book"></i> Wikipedia EN</span><br><div class="text-xs mt-1" style="color:var(--dim)">'+formatRichText(results.wikiEN)+'</div></div>';
+}
+if(!hasContent){
+html+='<div class="text-sm mb-2" style="color:var(--text)">Maaf, tidak ada hasil dari Wikipedia untuk "'+query+'". Coba cari di sumber lain:</div>';
+}
+html+='<div class="mt-3 pt-2 border-t" style="border-color:var(--border)"><span class="text-[9px] font-bold uppercase block mb-1" style="color:var(--dim);font-family:Orbitron">SUMBER BERWARNA:</span>';
+html+='<a href="https://id.wikipedia.org/wiki/Special:Search?search='+encodeURIComponent(query)+'" target="_blank" class="rich-link wiki"><i class="fa-solid fa-book"></i> Wikipedia ID</a>';
+html+='<a href="https://en.wikipedia.org/wiki/Special:Search?search='+encodeURIComponent(query)+'" target="_blank" class="rich-link wiki"><i class="fa-solid fa-book"></i> Wikipedia EN</a>';
+html+='<a href="https://www.google.com/search?q='+encodeURIComponent(query)+'" target="_blank" class="rich-link google"><i class="fa-brands fa-google"></i> Google Search</a>';
+html+='<a href="https://www.bing.com/search?q='+encodeURIComponent(query)+'" target="_blank" class="rich-link copilot"><i class="fa-solid fa-robot"></i> Bing/Copilot AI</a>';
+html+='</div></div>';
+msg.innerHTML+=html;
+msg.scrollTop=msg.scrollHeight;
+// TTS
+if(results.wikiID)speakResult(results.wikiID.substring(0,500));
+}
+
+// VOICE
+var synth=window.speechSynthesis||null;
+function speakResult(txt){
+if(!synth)return;
+synth.cancel();
+var u=new SpeechSynthesisUtterance(txt.replace(/<[^>]+>/g,''));
+u.lang='id-ID';u.rate=0.9;u.pitch=0.6;u.volume=0.8;
+synth.speak(u);
+}
+var recognizing=false;
+function toggleVoice(){
+if(!('webkitSpeechRecognition'in window)&&!('SpeechRecognition'in window)){alert('Voice Recognition tidak didukung di browser ini');return}
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+var rec=new SR();rec.lang='id-ID';
+var micBtn=document.getElementById('chatMicBtn');
+var chatInput=document.getElementById('chatInput');
+if(!recognizing){
+rec.start();recognizing=true;micBtn.classList.add('mic-listening');chatInput.placeholder='Mendengarkan...';
+}else{rec.stop();recognizing=false;micBtn.classList.remove('mic-listening');chatInput.placeholder='Tanya AI apa saja...';}
+rec.onresult=function(e){var t=e.results[0][0].transcript;chatInput.value=t;sendChat();};
+rec.onend=function(){recognizing=false;micBtn.classList.remove('mic-listening');chatInput.placeholder='Tanya AI apa saja...';};
+}
+
+// NAVIGATION
+function showHome(){
+document.getElementById('homeView').classList.remove('hidden');
+document.getElementById('toolView').classList.add('hidden');
+document.getElementById('chatView').classList.add('hidden');
+}
+
+// THEME
+function toggleTheme(){
+var html=document.documentElement;
+if(html.classList.contains('light')){html.classList.remove('light');html.classList.add('dark');document.getElementById('themeIcon').className='fa-solid fa-moon text-sm';localStorage.setItem('pabrik_theme','dark')}
+else{html.classList.remove('dark');html.classList.add('light');document.getElementById('themeIcon').className='fa-solid fa-sun text-sm';localStorage.setItem('pabrik_theme','light')}
+}
+
+// MODALS
+function openHelp(){document.getElementById('helpModal').classList.add('active')}
+function closeHelp(){document.getElementById('helpModal').classList.remove('active')}
+function openProgrammer(){document.getElementById('progModal').classList.add('active')}
+function closeProgrammer(){document.getElementById('progModal').classList.remove('active')}
+
+// SCREENSAVER
+var wisdomData=[
+{cat:'PETUAH BIJAK',icon:'fa-lightbulb',text:'Orang sukses bukan mereka yang tidak pernah gagal, tapi mereka yang tidak pernah menyerah. Setiap kegagalan adalah satu langkah lebih dekat ke keberhasilan.',source:'Petuah Bijak #1'},
+{cat:'MOTIVASI',icon:'fa-fire',text:'Kesuksesan bukan tentang siapa yang tercepat, tapi siapa yang paling konsisten. Teruslah berjalan, meski pelan, asal maju.',source:'Motivasi #1'},
+{cat:'PETUAH BIJAK',icon:'fa-tree',text:'Pohon yang kuat adalah pohon yang tahan badai. Begitu pula manusia, cobaan membuat kita lebih kuat dari sebelumnya.',source:'Petuah Bijak #2'},
+{cat:'MOTIVASI',icon:'fa-rocket',text:'Jangan takut bermimpi besar. Mimpi adalah cetak biru masa depan. Tanpa mimpi, hidup bagaikan kapal tanpa kompas.',source:'Motivasi #2'},
+{cat:'DOA AL-QURAN',icon:'fa-hands-praying',ar:'رَبِّ هَبْ لِي مِن لَّدُنكَ ذُرِّيَّةً طَيِّبَةً',text:'Ya Tuhanku, berilah aku dari sisi Engkau seorang anak yang baik. Sesungguhnya Engkau Maha Pendengar doa.',source:'QS. Ali Imran: 38'},
+{cat:'DOA AL-QURAN',icon:'fa-hands-praying',ar:'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً',text:'Ya Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat. Dan jagalah kami dari siksa api neraka.',source:'QS. Al-Baqarah: 201'},
+{cat:'PETUAH BIJAK',icon:'fa-mountain',text:'Gunung tidak bisa diratakan dalam sehari. Tapi dengan kesabaran dan ketekunan, setiap batu akan terkikis. Begitu pula masalah hidup.',source:'Petuah Bijak #3'},
+{cat:'MOTIVASI',icon:'fa-star',text:'Bintang tidak bisa bersinar tanpa kegelapan. Begitu pula manusia, butuh kesulitan untuk menemukan kekuatan sejatinya.',source:'Motivasi #3'},
+{cat:'DOA AL-QURAN',icon:'fa-hands-praying',ar:'وَقُل رَّبِّ زِدْنِي عِلْمًا',text:'Ya Tuhanku, tambahkanlah aku ilmu pengetahuan. Ilmu adalah cahaya yang menerangi jalan kebenaran.',source:'QS. Thaha: 114'},
+{cat:'PETUAH BIJAK',icon:'fa-water',text:'Air mengalir ke tempat rendah, bukan karena lemah, tapi karena tahu arah. Begitu pula orang bijak, tahu kapan harus rendah hati.',source:'Petuah Bijak #4'},
+{cat:'MOTIVASI',icon:'fa-bolt',text:'Kunci sukses ada di tangan Anda. Bukan di keadaan, bukan di orang lain. Anda adalah arsitek masa depan Anda sendiri.',source:'Motivasi #4'},
+{cat:'DOA AL-QURAN',icon:'fa-hands-praying',ar:'إِنَّ مَعَ الْعُسْرِ يُسْرًا',text:'Sesungguhnya bersama kesulitan ada kemudahan. Maka bersabarlah, karena setiap malam pasti ada pagi.',source:'QS. Al-Insyirah: 5-6'},
+{cat:'PETUAH BIJAK',icon:'fa-seedling',text:'Bambu yang ditebang akan tumbuh kembali lebih banyak. Kekalahan hari ini adalah benih kemenangan esok hari.',source:'Petuah Bijak #5'},
+{cat:'MOTIVASI',icon:'fa-anchor',text:'Jangan jangkar di pelabuhan ketika Anda diciptakan untuk berlayar. Lautan luas menanti, angin pun bertiup. Berlayarlah!',source:'Motivasi #5'}
+];
+var scIdx=0,scTimer=null,idleTimer=null;
+function activateScreensaver(){
+var el=document.getElementById('screensaver');if(!el)return;
+el.classList.remove('hidden');el.style.opacity='0';
+var bg=document.getElementById('earth-3d-bg');if(bg)bg.style.opacity='0.7';
+setTimeout(function(){el.style.opacity='1'},30);
+cycleScreensaverContent();
+clearInterval(scTimer);scTimer=setInterval(cycleScreensaverContent,12000);
+}
+function deactivateScreensaver(){
+clearInterval(scTimer);if(synth)synth.cancel();
+var el=document.getElementById('screensaver');if(!el)return;
+el.style.opacity='0';
+var bg=document.getElementById('earth-3d-bg');if(bg)bg.style.opacity='0.22';
+setTimeout(function(){el.classList.add('hidden')},500);
+}
+function cycleScreensaverContent(){
+var w=wisdomData[scIdx];var el=document.getElementById('scContent');if(!el)return;
+el.style.opacity='0';
+setTimeout(function(){
+document.getElementById('scIcon').innerHTML='<i class="fa-solid '+w.icon+'" style="color:#fbbf24"></i>';
+document.getElementById('scCategory').textContent=w.cat;
+var ar=document.getElementById('scArabic');
+if(w.ar){ar.textContent=w.ar;ar.style.display='block';}else{ar.style.display='none';}
+document.getElementById('scText').textContent=w.text;
+document.getElementById('scSource').textContent=w.source;
+el.style.opacity='1';
+scIdx=(scIdx+1)%wisdomData.length;
+},1000);
+}
+function readScreensaverContent(){
+var w=wisdomData[(scIdx-1+wisdomData.length)%wisdomData.length];
+speakResult(w.text);
+}
+function resetIdleTimer(){
+clearTimeout(idleTimer);
+idleTimer=setTimeout(activateScreensaver,120000);
+}
+document.addEventListener('mousemove',resetIdleTimer);
+document.addEventListener('keydown',resetIdleTimer);
+document.addEventListener('click',resetIdleTimer);
+
+// CLOCK
+function updateClock(){
+var d=new Date();
+var days=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+var months=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+var dayName=days[d.getDay()]+', '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+var timeStr=d.toLocaleTimeString('id-ID');
+var bd=document.getElementById('bootDate');if(bd)bd.textContent=dayName;
+var bt=document.getElementById('bootTime');if(bt)bt.textContent=timeStr;
+var hd=document.getElementById('hdrDate');if(hd)hd.textContent=dayName;
+var ht=document.getElementById('hdrTime');if(ht)ht.textContent=timeStr;
+}
+
+// BOOT SEQUENCE
+function bootSequence(){
+var steps=['MEMUAT DATABASE AI TOOLS...','MENGHUBUNGKAN AI ENGINE...','MENGCALIBRATE 3D EARTH...','MEMUAT WISDOM DATABASE...','SISTEM SIAP!'];
+var bar=document.getElementById('bootBar');var status=document.getElementById('bootStatus');
+var pct=0;var stepIdx=0;
+var interval=setInterval(function(){
+pct+=4;bar.style.width=pct+'%';
+if(pct>=20&&stepIdx<1){status.textContent='&gt;_ '+steps[1];stepIdx=1}
+if(pct>=40&&stepIdx<2){status.textContent='&gt;_ '+steps[2];stepIdx=2}
+if(pct>=60&&stepIdx<3){status.textContent='&gt;_ '+steps[3];stepIdx=3}
+if(pct>=80&&stepIdx<4){status.textContent='&gt;_ '+steps[4];stepIdx=4}
+if(pct>=100){clearInterval(interval);setTimeout(function(){
+var loader=document.getElementById('bootLoader');
+loader.style.opacity='0';setTimeout(function(){loader.style.display='none'},700);
+},300)}
+},80);
+}
+
+// INIT
+document.documentElement.classList.add('dark');
+if(localStorage.getItem('pabrik_theme')==='light'){document.documentElement.classList.remove('dark');document.documentElement.classList.add('light');document.getElementById('themeIcon').className='fa-solid fa-sun text-sm';}
+renderTools('all');
+updateClock();setInterval(updateClock,1000);
+bootSequence();
+setTimeout(initBgEarth,500);
+resetIdleTimer();
+</script>
+</body>
+</html>
