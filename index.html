@@ -174,6 +174,10 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:0}
 <span class="font-bold text-sm" style="font-family:Orbitron;color:#c084fc">AI CHATBOT</span>
 <span class="text-[8px] px-2 py-0.5 rounded" style="background:rgba(168,85,247,0.2);color:#c084fc;font-family:Orbitron">WIKI+GOOGLE</span>
 </div>
+<div class="flex gap-2 mb-3 flex-wrap">
+<button onclick="showMyApps()" class="px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all hover:scale-105" style="background:rgba(6,182,212,0.15);border-color:rgba(6,182,212,0.4);color:#06b6d4;font-family:Orbitron"><i class="fa-solid fa-grip mr-1"></i>MY APPS</button>
+<button onclick="showFeatures()" class="px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all hover:scale-105" style="background:rgba(245,158,11,0.15);border-color:rgba(245,158,11,0.4);color:#f59e0b;font-family:Orbitron"><i class="fa-solid fa-list-check mr-1"></i>FITUR APLIKASI</button>
+</div>
 <div id="chatMessages" class="min-h-[200px] max-h-[400px] overflow-y-auto cs mb-3"></div>
 <div class="flex gap-2">
 <button id="chatMicBtn" onclick="toggleVoice()" class="w-10 h-10 rounded-lg border flex items-center justify-center flex-shrink-0 transition-all" style="background:var(--card);border-color:var(--border);color:var(--accent2)"><i class="fa-solid fa-microphone text-sm"></i></button>
@@ -526,7 +530,7 @@ document.getElementById('toolView').classList.add('hidden');
 document.getElementById('chatView').classList.remove('hidden');
 var msg=document.getElementById('chatMessages');
 if(!msg.innerHTML){
-msg.innerHTML='<div class="text-center text-xs mb-4" style="color:var(--dim);font-family:Orbitron"><i class="fa-solid fa-robot text-2xl mb-2 block" style="color:#c084fc"></i>AI Chatbot dengan Wikipedia & Google Search<br>Tanya apa saja, AI akan mencari jawaban dan memberikan link sumber berwarna-warni</div>';
+msg.innerHTML='<div class="text-center text-xs mb-4" style="color:var(--dim);font-family:Orbitron"><i class="fa-solid fa-robot text-2xl mb-2 block" style="color:#c084fc"></i>AI Chatbot dengan Wikipedia & Google Search<br>Tanya apa saja, AI akan mencari jawaban dan memberikan link sumber berwarna-warni<br><br>Klik <span style="color:#06b6d4">MY APPS</span> untuk lihat semua aplikasi<br>Klik <span style="color:#f59e0b">FITUR APLIKASI</span> untuk detail fitur Pabrik AI</div>';
 }
 }
 function sendChat(){
@@ -603,6 +607,152 @@ msg.innerHTML+=html;
 msg.scrollTop=msg.scrollHeight;
 // TTS
 if(results.wikiID)speakResult(results.wikiID.substring(0,500));
+}
+
+// SHORTCUT: MY APPS
+var myAppsList=[
+{u:"https://adikds.github.io/jarvis-ai/",i:"fa-cat",n:"JARVIS AI"},
+{u:"https://adikds.github.io/-Doa-Digital-Pro/",i:"fa-hands-praying",n:"Doa Digital Pro"},
+{u:"https://adikds.github.io/Al-Quran-Karim/",i:"fa-book-quran",n:"Al-Quran Karim"},
+{u:"https://adikds.github.io/ai-meeting-assistant/",i:"fa-microphone",n:"AI Meeting Pro"},
+{u:"https://adikds.github.io/NEXUS-PAGE-AGENT-VER.1.0/",i:"fa-network-wired",n:"Nexus Page Agent"},
+{u:"https://adikds.github.io/APEX-Foundations-v3.1-Geotechnical-AI-/",i:"fa-building",n:"Apex Foundations"},
+{u:"https://adikds.github.io/ANALISIS-PONDASI-TELAPAK-/",i:"fa-layer-group",n:"Analisis Pondasi"},
+{u:"https://adikds.github.io/AASHTO-SOIL-CLASSIFIER/",i:"fa-mountain",n:"AASHTO Soil"},
+{u:"https://adikds.github.io/ATLAS-GEOTEKNIK/",i:"fa-earth-americas",n:"Atlas Geoteknik"},
+{u:"https://adikds.github.io/GeoStructPro-15-Essential-Geotechnical-Formulas/",i:"fa-mountain",n:"GeoStructPro 15"},
+{u:"https://adikds.github.io/GEOSTRUCT-PRO-20-FORMULA-GEOTECHNICAL/",i:"fa-layer-group",n:"GeoStruct Pro 20"},
+{u:"https://adikds.github.io/UNIFIED-SOIL-CLASSIFICATION-SYSTEM/",i:"fa-cubes",n:"USCS Soil"},
+{u:"https://adikds.github.io/WAY-APU-DAM/",i:"fa-building-shield",n:"Way Apu Dam"},
+{u:"https://adikds.github.io/INTEGRATED-DAM-ANALYTICS-ASSESSMENT-SYSTEM/",i:"fa-water",n:"Dam Analytics"},
+{u:"https://adikds.github.io/SISTEM-MONITORING-SEISMIK-PERINGATAN-TSUNAMI/",i:"fa-wave-square",n:"Monitoring Sismic"},
+{u:"https://adikds.github.io/MONITORING-PREDIKSI-STATUS-EI-NI-O-LA-NI-A/",i:"fa-temperature-half",n:"El Nino La Nina"},
+{u:"https://adikds.github.io/MONITORING-PREDIKSI-ANGIN-MUSON-INDONESIA/",i:"fa-wind",n:"Monitoring Cuaca"},
+{u:"https://adikds.github.io/AERORADAR-PRO/",i:"fa-plane",n:"AeroRadar Pro"},
+{u:"https://adikds.github.io/HYDRACANAL-PRO-GEOMETRIC-DESIGN/",i:"fa-water-ladder",n:"HydraCanal Pro"},
+{u:"https://adikds.github.io/EVENT-DRIVEN-ARCHITECTURE-FOR-AI-AGENTS/",i:"fa-sitemap",n:"EDA AI Agents"},
+{u:"https://adikds.github.io/edu-market-pro/",i:"fa-graduation-cap",n:"EduMarket Pro"},
+{u:"https://adikds.github.io/iptv-terminal/",i:"fa-tv",n:"IPTV Terminal"},
+{u:"https://adikds.github.io/TV-streaming-live/",i:"fa-signal",n:"TV Streaming Live"},
+{u:"https://adikds.github.io/pos-system/",i:"fa-cash-register",n:"POS Terminal Pro"},
+{u:"https://adikds.github.io/Aplikasi_Point_of_Sale_-POS-_atau_sistem_kasir/",i:"fa-store",n:"POS Kasir"},
+{u:"https://adikds.github.io/business-suite/",i:"fa-chart-bar",n:"Business Suite"},
+{u:"https://adikds.github.io/stock-manager/",i:"fa-boxes-stacked",n:"Stock Manager"},
+{u:"https://adikds.github.io/financial-planner/",i:"fa-chart-line",n:"Financial Planner"},
+{u:"https://adikds.github.io/KEUANGANKU/",i:"fa-wallet",n:"Keuanganku"},
+{u:"https://adikds.github.io/DOKTER-AI/",i:"fa-user-doctor",n:"DOKTER AI EXPERT"},
+{u:"https://adikds.github.io/DARUSSYIFA-MEDIKA/",i:"fa-hospital",n:"DARUSSYIFA V.5.0"},
+{u:"https://adikds.github.io/DARUSSYIFA_MEDIKA/",i:"fa-file-medical",n:"DARUSSYIFA V.2.0"},
+{u:"https://adikds.github.io/SMILE-SYIFA-AI/",i:"fa-face-smile",n:"SMILE SYIFA AI"},
+{u:"https://adikds.github.io/SKIN_SYIFA_AI/",i:"fa-magnifying-glass-chart",n:"SKIN SYIFA AI"},
+{u:"https://adikds.github.io/NEURO-PSYCH_AI/",i:"fa-brain",n:"NEURO-PSYCH AI"},
+{u:"https://adikds.github.io/-MEGA-ATLAS-FKG/",i:"fa-tooth",n:"Mega Atlas FKG"},
+{u:"https://adikds.github.io/Mega-Atlas-Kedokteran-Neurologi-Bedah-Syaraf/",i:"fa-brain",n:"Neurology Atlas"},
+{u:"https://adikds.github.io/STATISTICS_for_ENGINEERS-/",i:"fa-chart-pie",n:"Statistics Engineers"},
+{u:"https://adikds.github.io/AI-VIDEO-EDITOR/",i:"fa-film",n:"AI Video Editor"},
+{u:"https://adikds.github.io/SIMULASI-DAN-JADWAL-SERTA-SCOR-WORLD-CUP-2026/",i:"fa-futbol",n:"World Cup 2026"},
+{u:"https://adikds.github.io/FREE-CLAUDE-CODE/",i:"fa-code",n:"Free Claude Code"},
+{u:"https://adikds.github.io/konstruksi-ai/",i:"fa-building-columns",n:"KONAI Pro"},
+{u:"https://adikds.github.io/pabrik-ai/",i:"fa-microchip",n:"Pabrik AI Pro"},
+{u:"https://adikds.github.io/Adi_Newbie/",i:"fa-user-astronaut",n:"ADI NEWBIE"}
+];
+function showMyApps(){
+var msg=document.getElementById('chatMessages');
+var html='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px 16px 16px 4px;padding:14px 16px;max-width:95%;margin-bottom:12px">';
+html+='<div class="text-[9px] mb-3 flex items-center gap-1" style="color:#06b6d4;font-family:Orbitron"><i class="fa-solid fa-grip"></i> MY APPS - 44 APLIKASI</div>';
+html+='<div class="text-xs mb-3" style="color:var(--dim)">Semua aplikasi yang pernah dibuat oleh Mohamad Hartadi, deployed di GitHub Pages:</div>';
+html+='<div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">';
+myAppsList.forEach(function(a){
+html+='<a href="'+a.u+'" target="_blank" style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:8px;background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);text-decoration:none;transition:all .2s" onmouseover="this.style.background=\'rgba(6,182,212,0.2)\'" onmouseout="this.style.background=\'rgba(6,182,212,0.08)\'"><i class="fa-solid '+a.i+' text-xs" style="color:#06b6d4"></i><span class="text-[10px] font-bold" style="color:var(--text)">'+a.n+'</span></a>';
+});
+html+='</div>';
+html+='<div class="mt-3 pt-2 border-t text-[9px]" style="border-color:var(--border);color:var(--dim);font-family:Orbitron">Total: '+myAppsList.length+' aplikasi • GitHub: AdiKds • Hosted on GitHub Pages</div>';
+html+='</div>';
+msg.innerHTML+=html;
+msg.scrollTop=msg.scrollHeight;
+}
+
+// SHORTCUT: FITUR APLIKASI
+function showFeatures(){
+var msg=document.getElementById('chatMessages');
+var html='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px 16px 16px 4px;padding:14px 16px;max-width:95%;margin-bottom:12px">';
+html+='<div class="text-[9px] mb-3 flex items-center gap-1" style="color:#f59e0b;font-family:Orbitron"><i class="fa-solid fa-list-check"></i> FITUR APLIKASI - PABRIK AI PRO</div>';
+html+='<div class="text-xs mb-3" style="color:var(--dim)">Pabrik AI Pro v2.0 adalah platform AI dengan 22+ tools untuk produktivitas, akademik, visual, dan bisnis. Berikut detail fiturnya:</div>';
+
+// Copywriting section
+html+='<div class="mb-3 p-2 rounded-lg" style="background:rgba(236,72,153,0.08);border:1px solid rgba(236,72,153,0.2)">';
+html+='<div class="text-[10px] font-bold mb-1.5" style="color:#ec4899;font-family:Orbitron"><i class="fa-solid fa-pen-nib mr-1"></i>COPYWRITING (3 Tools)</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>1. AI Pembuat Copywriting</b> - Copymatic untuk copywriting sales yang converting. Input: produk/jasa, Output: copy persuasif.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>2. AI Content Scriptwriter</b> - Script untuk video YouTube, TikTok, Reels. Input: topik, Output: script lengkap dengan hook.</div>';
+html+='<div class="text-[11px]" style="color:var(--text)"><b>3. AI SEO Optimizer</b> - Optimasi konten untuk SEO Google. Input: artikel/keyword, Output: saran SEO.</div>';
+html+='</div>';
+
+// Akademik section
+html+='<div class="mb-3 p-2 rounded-lg" style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2)">';
+html+='<div class="text-[10px] font-bold mb-1.5" style="color:#3b82f6;font-family:Orbitron"><i class="fa-solid fa-graduation-cap mr-1"></i>AKADEMIK (9 Tools)</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>4. AI Konten Profesional</b> - Artikel blog & konten profesional berkualitas tinggi.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>5. AI Turnitin (Plagiasi)</b> - Cek & parafrase untuk mengurangi tingkat plagiasi.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>6. AI Jurnal Refleksi Harian</b> - Jurnal refleksi harian otomatis terstruktur.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>7. AI Jurnal & Scopus Kuliah</b> - Draft jurnal ilmiah format Scopus dengan metodologi.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>8. AI Materi Belajar</b> - Materi ajar dari TK sampai Kuliah sesuai kurikulum.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>9. AI Asisten Tugas Kuliah</b> - Bantu kerjakan tugas kuliah dengan referensi.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>10. AI Pembuat PPT</b> - Presentasi PowerPoint otomatis dari topik.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>11. AI PPT dari Word/txt</b> - Konversi dokumen Word/txt jadi slide PPT.</div>';
+html+='<div class="text-[11px]" style="color:var(--text)"><b>12. AI Presentation & Infographic</b> - Desain presentasi & infografis visual.</div>';
+html+='</div>';
+
+// Visual section
+html+='<div class="mb-3 p-2 rounded-lg" style="background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2)">';
+html+='<div class="text-[10px] font-bold mb-1.5" style="color:#a855f7;font-family:Orbitron"><i class="fa-solid fa-image mr-1"></i>VISUAL (3 Tools)</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>13. Studio Banner Promosi AI</b> - Desain banner promosi otomatis untuk social media.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>14. AI Product Image Generator</b> - Generate prompt gambar produk untuk AI image tools.</div>';
+html+='<div class="text-[11px]" style="color:var(--text)"><b>15. MomentsAI Card Builder</b> - Kartu ucapan & moments untuk berbagai occasion.</div>';
+html+='</div>';
+
+// Bisnis section
+html+='<div class="mb-3 p-2 rounded-lg" style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2)">';
+html+='<div class="text-[10px] font-bold mb-1.5" style="color:#7c3aed;font-family:Orbitron"><i class="fa-solid fa-chart-line mr-1"></i>BISNIS (7 Tools)</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>16. Text to Speech AI</b> - Konversi teks jadi suara AI natural (Indonesia & English).</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>17. AI Breakdown Modal & Profit</b> - Analisis modal dan proyeksi keuntungan bisnis.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>18. AI File Analyzer</b> - Analisis file & dokumen untuk ekstraksi informasi.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>19. AI Model Studio</b> - Buat model bisnis & strategi dengan framework.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>20. AI Studio Pro</b> - Multi-purpose AI studio untuk berbagai kebutuhan.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>21. AI Property</b> - Analisis & valuasi properti berdasarkan lokasi & ukuran.</div>';
+html+='<div class="text-[11px]" style="color:var(--text)"><b>22. AI ChatDigiPro</b> - Chatbot AI serbaguna untuk topik apa saja.</div>';
+html+='</div>';
+
+// Fitur Utama section
+html+='<div class="mb-3 p-2 rounded-lg" style="background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2)">';
+html+='<div class="text-[10px] font-bold mb-1.5" style="color:#06b6d4;font-family:Orbitron"><i class="fa-solid fa-star mr-1"></i>FITUR UTAMA APLIKASI</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>AI Chatbot</b> - Chat dengan Wikipedia ID+EN, Google, dan Bing/Copilot. Sumber berwarna-warni yang bisa diklik.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>8 Tema SIRI</b> - Cyber Cyan, Light, Siri Purple, Siri Green, Siri Blue, Siri Sunset, Siri Rose, Siri Mono.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>3D Earth Orbit</b> - Background bumi 3D berputar dengan awan, bintang, dan atmosfer.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>Screensaver</b> - Petuah Bijak, Motivasi, dan Doa Al-Quran dengan TTS otomatis.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>Voice Input</b> - Speech recognition bahasa Indonesia untuk input hands-free.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>Text to Speech</b> - AI membacakan hasil dengan suara natural bahasa Indonesia.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>My Apps</b> - Akses 44 aplikasi lain dari Mohamad Hartadi dalam satu klik.</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>Request Fitur</b> - Form request fitur baru terhubung ke WhatsApp developer.</div>';
+html+='<div class="text-[11px]" style="color:var(--text)"><b>Boot Animation</b> - Loading screen futuristik dengan orbit rings & progress bar.</div>';
+html+='</div>';
+
+// Developer info
+html+='<div class="mt-3 pt-3 border-t" style="border-color:var(--border)">';
+html+='<div class="text-[10px] font-bold mb-2" style="color:var(--accent2);font-family:Orbitron"><i class="fa-solid fa-code mr-1"></i>PENGEMBANG APLIKASI</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>Nama:</b> Mohamad Hartadi</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>GitHub:</b> AdiKds (github.com/AdiKds)</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>Platform:</b> GitHub Pages (adikds.github.io)</div>';
+html+='<div class="text-[11px] mb-1" style="color:var(--text)"><b>Total Aplikasi:</b> 44+ web apps deployed</div>';
+html+='<div class="text-[11px] mb-2" style="color:var(--text)"><b>Versi:</b> Pabrik AI Pro v2.0 (2026)</div>';
+html+='<div class="flex gap-2 flex-wrap">';
+html+='<a href="https://facebook.com/m.hartadi" target="_blank" class="rich-link" style="color:#60a5fa;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);padding:3px 8px;border-radius:6px;font-size:10px;text-decoration:none"><i class="fa-brands fa-facebook mr-1"></i>Facebook</a>';
+html+='<a href="https://newbieonline7.blogspot.com" target="_blank" class="rich-link" style="color:#f97316;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);padding:3px 8px;border-radius:6px;font-size:10px;text-decoration:none"><i class="fa-solid fa-blog mr-1"></i>Blog</a>';
+html+='<a href="https://wa.me/6282231036047" target="_blank" class="rich-link" style="color:#25d366;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);padding:3px 8px;border-radius:6px;font-size:10px;text-decoration:none"><i class="fa-brands fa-whatsapp mr-1"></i>WhatsApp: 082231036047</a>';
+html+='</div>';
+html+='</div>';
+
+html+='</div>';
+msg.innerHTML+=html;
+msg.scrollTop=msg.scrollHeight;
 }
 
 // VOICE
