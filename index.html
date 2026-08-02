@@ -12,8 +12,22 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" onerror="window.THREE_FAILED=true"></script>
 <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Plus Jakarta Sans','sans-serif'],orbitron:['Orbitron','sans-serif']}}}}</script>
 <style>
-:root{--accent:#06b6d4;--accent2:#00ffff;--bg:#001018;--bg2:#0a1929;--card:rgba(10,25,41,0.85);--border:rgba(6,182,212,0.3);--text:#e0f7fa;--dim:rgba(0,255,255,0.6)}
-html.light{--accent:#0891b2;--accent2:#06b6d4;--bg:#f0f9ff;--bg2:#e0f2fe;--card:rgba(255,255,255,0.9);--border:rgba(8,145,178,0.3);--text:#0c4a6e;--dim:rgba(8,145,178,0.6)}
+/* SIRI THEME: CYBER CYAN (default) */
+:root,html[data-theme="cyber"]{--accent:#06b6d4;--accent2:#00ffff;--bg:#001018;--bg2:#0a1929;--card:rgba(10,25,41,0.85);--border:rgba(6,182,212,0.3);--text:#e0f7fa;--dim:rgba(0,255,255,0.6)}
+/* SIRI THEME: LIGHT MODE */
+html[data-theme="light"]{--accent:#0891b2;--accent2:#06b6d4;--bg:#f0f9ff;--bg2:#e0f2fe;--card:rgba(255,255,255,0.9);--border:rgba(8,145,178,0.3);--text:#0c4a6e;--dim:rgba(8,145,178,0.6)}
+/* SIRI THEME: SIRI PURPLE */
+html[data-theme="siri-purple"]{--accent:#a855f7;--accent2:#d8b4fe;--bg:#0f0a1e;--bg2:#1a1033;--card:rgba(26,16,51,0.85);--border:rgba(168,85,247,0.3);--text:#f3e8ff;--dim:rgba(216,180,254,0.6)}
+/* SIRI THEME: SIRI GREEN */
+html[data-theme="siri-green"]{--accent:#22c55e;--accent2:#86efac;--bg:#0a1f0e;--bg2:#0f2914;--card:rgba(15,41,20,0.85);--border:rgba(34,197,94,0.3);--text:#dcfce7;--dim:rgba(134,239,172,0.6)}
+/* SIRI THEME: SIRI SUNSET */
+html[data-theme="siri-sunset"]{--accent:#f97316;--accent2:#fdba74;--bg:#1a0f0a;--bg2:#291810;--card:rgba(41,24,16,0.85);--border:rgba(249,115,22,0.3);--text:#fed7aa;--dim:rgba(253,186,116,0.6)}
+/* SIRI THEME: SIRI ROSE */
+html[data-theme="siri-rose"]{--accent:#ec4899;--accent2:#f9a8d4;--bg:#1f0a17;--bg2:#2d1023;--card:rgba(45,16,35,0.85);--border:rgba(236,72,153,0.3);--text:#fce7f3;--dim:rgba(249,168,212,0.6)}
+/* SIRI THEME: SIRI MIDNIGHT */
+html[data-theme="siri-midnight"]{--accent:#3b82f6;--accent2:#93c5fd;--bg:#0a0a1a;--bg2:#111130;--card:rgba(17,17,48,0.85);--border:rgba(59,130,246,0.3);--text:#dbeafe;--dim:rgba(147,197,253,0.6)}
+/* SIRI THEME: SIRI MONO */
+html[data-theme="siri-mono"]{--accent:#737373;--accent2:#d4d4d4;--bg:#0a0a0a;--bg2:#1a1a1a;--card:rgba(26,26,26,0.85);--border:rgba(115,115,115,0.3);--text:#e5e5e5;--dim:rgba(212,212,212,0.5)}
 body{background:var(--bg);color:var(--text)}
 canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:0}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
@@ -21,6 +35,12 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:0}
 @keyframes spin3D2{0%{transform:rotateX(45deg) rotateY(45deg) rotateZ(0deg)}100%{transform:rotateX(45deg) rotateY(45deg) rotateZ(-360deg)}}
 @keyframes spin3D3{0%{transform:rotateX(75deg) rotateY(-45deg) rotateZ(0deg)}100%{transform:rotateX(75deg) rotateY(-45deg) rotateZ(360deg)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+@keyframes scEarthSpin{0%{transform:rotateY(0deg) rotateX(15deg)}100%{transform:rotateY(360deg) rotateX(15deg)}}
+@keyframes scOrbit1{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes scOrbit2{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes scOrbit3{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes slideInRight{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slideOutRight{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}
 @keyframes spin{to{transform:rotate(360deg)}}
 .orbit-container{perspective:1200px;transform-style:preserve-3d}
 .orbit-ring-1,.orbit-ring-2,.orbit-ring-3{position:absolute;border-radius:50%;border:2px solid transparent;transform-style:preserve-3d}
@@ -93,6 +113,7 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:0}
 </div>
 <div class="flex items-center gap-1.5 flex-shrink-0">
 <button onclick="toggleTheme()" id="themeBtn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg border flex items-center justify-center transition-all hover:scale-110" style="background:var(--card);border-color:var(--border);color:var(--accent2)"><i class="fa-solid fa-moon text-sm" id="themeIcon"></i></button>
+<button onclick="openThemeSelector()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg border flex items-center justify-center transition-all hover:scale-110" style="background:var(--card);border-color:var(--border);color:#a855f7" title="Pilih Tema SIRI"><i class="fa-solid fa-palette text-sm"></i></button>
 <button onclick="openHelp()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg border flex items-center justify-center transition-all hover:scale-110" style="background:var(--card);border-color:var(--border);color:#fbbf24"><i class="fa-solid fa-circle-question text-sm"></i></button>
 <button onclick="openProgrammer()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg border flex items-center justify-center transition-all hover:scale-110" style="background:var(--card);border-color:var(--border);color:#a78bfa"><i class="fa-solid fa-user-gear text-sm"></i></button>
 </div>
@@ -179,6 +200,20 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:0}
 
 <!-- SCREENSAVER -->
 <div id="screensaver" class="hidden" onclick="if(event.target===this)deactivateScreensaver()" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.95);overflow:hidden;opacity:0;transition:opacity .5s">
+<!-- 3D EARTH CSS FALLBACK (always visible in screensaver) -->
+<div id="scEarthContainer" style="position:absolute;top:15%;left:50%;transform:translateX(-50%);width:160px;height:160px;perspective:800px;z-index:5">
+<div style="width:100%;height:100%;position:relative;transform-style:preserve-3d;animation:scEarthSpin 12s linear infinite">
+<div style="width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 30% 30%,#0ea5e9,#0369a1 40%,#082f49 70%,#020617);box-shadow:inset -20px -10px 40px rgba(0,0,0,0.6),0 0 40px rgba(6,182,212,0.4),0 0 80px rgba(6,182,212,0.2);position:relative;overflow:hidden">
+<div style="position:absolute;top:20%;left:15%;width:30%;height:25%;background:rgba(34,197,94,0.3);border-radius:50%;filter:blur(3px)"></div>
+<div style="position:absolute;top:45%;left:50%;width:25%;height:20%;background:rgba(34,197,94,0.25);border-radius:50%;filter:blur(3px)"></div>
+<div style="position:absolute;top:60%;left:25%;width:20%;height:15%;background:rgba(34,197,94,0.2);border-radius:50%;filter:blur(2px)"></div>
+<div style="position:absolute;top:10%;left:55%;width:18%;height:12%;background:rgba(34,197,94,0.15);border-radius:50%;filter:blur(2px)"></div>
+</div>
+</div>
+<div style="position:absolute;inset:-20px;border:2px solid rgba(6,182,212,0.3);border-radius:50%;animation:scOrbit1 8s linear infinite"></div>
+<div style="position:absolute;inset:-35px;border:2px solid rgba(168,85,247,0.2);border-radius:50%;animation:scOrbit2 12s linear infinite reverse"></div>
+<div style="position:absolute;inset:-50px;border:1px solid rgba(251,191,36,0.15);border-radius:50%;animation:scOrbit3 16s linear infinite"></div>
+</div>
 <button onclick="deactivateScreensaver()" style="position:absolute;top:12px;right:12px;z-index:50;background:rgba(20,20,40,0.8);border:1px solid rgba(0,255,255,0.3);color:rgba(0,255,255,0.6);padding:8px 16px;border-radius:8px;font-size:11px;cursor:pointer;font-family:Orbitron"><i class="fa-solid fa-power-off"></i>TUTUP</button>
 <div style="position:absolute;bottom:8%;left:50%;transform:translateX(-50%);text-align:center;width:90%;max-width:600px;z-index:10">
 <div id="scContent" class="sc-content">
@@ -192,22 +227,63 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:0}
 </div>
 </div>
 
+<!-- THEME MODAL -->
+<div id="themeModal" class="modal-overlay" onclick="if(event.target===this)closeThemeSelector()">
+<div class="modal-box max-w-sm">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold" style="font-family:Orbitron;color:#a855f7"><i class="fa-solid fa-palette mr-2"></i>TEMA SIRI</h3>
+<button onclick="closeThemeSelector()" class="w-8 h-8 rounded-lg border flex items-center justify-center" style="border-color:var(--border);color:var(--dim)"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<p class="text-xs mb-3" style="color:var(--dim);font-family:Rajdhani">Pilih tema favorit Anda. Tema disimpan otomatis.</p>
+<div id="themeList"></div>
+<div class="mt-4 pt-3 border-t text-center text-xs" style="border-color:var(--border);color:var(--dim);font-family:Orbitron">PABRIK AI PRO v2.0</div>
+</div>
+</div>
+
 <!-- MODALS -->
 <div id="helpModal" class="modal-overlay" onclick="if(event.target===this)closeHelp()">
 <div class="modal-box max-w-lg">
 <div class="flex items-center justify-between mb-4">
-<h3 class="text-lg font-bold" style="font-family:Orbitron;color:var(--accent2)"><i class="fa-solid fa-circle-question mr-2"></i>BANTUAN</h3>
+<h3 class="text-lg font-bold" style="font-family:Orbitron;color:var(--accent2)"><i class="fa-solid fa-circle-info mr-2"></i>SYSTEM HELP</h3>
 <button onclick="closeHelp()" class="w-8 h-8 rounded-lg border flex items-center justify-center" style="border-color:var(--border);color:var(--dim)"><i class="fa-solid fa-xmark"></i></button>
 </div>
-<div class="space-y-3 text-sm" style="color:var(--text)">
-<div><i class="fa-solid fa-pen-nib mr-2" style="color:#06b6d4"></i><b>Copywriting</b> - Tools AI untuk copywriting, script, SEO & konten</div>
-<div><i class="fa-solid fa-graduation-cap mr-2" style="color:#10b981"></i><b>Akademik</b> - Tools AI untuk turnitin, jurnal, materi belajar & tugas</div>
-<div><i class="fa-solid fa-image mr-2" style="color:#f59e0b"></i><b>Visual</b> - Tools AI untuk PPT, infografis, banner & product image</div>
-<div><i class="fa-solid fa-chart-line mr-2" style="color:#a78bfa"></i><b>Bisnis</b> - Tools AI untuk TTS, analisis modal, file analyzer & properti</div>
-<div><i class="fa-solid fa-robot mr-2" style="color:#c084fc"></i><b>AI Chat</b> - Tanya AI dengan pencarian Wikipedia & Google</div>
-<div><i class="fa-solid fa-hands-praying mr-2" style="color:#fbbf24"></i><b>Screensaver</b> - Otomatis aktif setelah 2 menit idle</div>
+<div class="mb-4">
+<h4 class="text-xs font-bold mb-2 uppercase tracking-wider" style="font-family:Orbitron;color:#fbbf24"><i class="fa-solid fa-table mr-1"></i>MATRIKS FITUR</h4>
+<div style="overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;font-size:11px;font-family:Rajdhani">
+<tr style="border-bottom:2px solid var(--border)">
+<th style="text-align:left;padding:6px 4px;color:var(--accent2);font-family:Orbitron;font-size:9px;text-transform:uppercase">Fitur</th>
+<th style="text-align:center;padding:6px 4px;color:var(--accent2);font-family:Orbitron;font-size:9px;text-transform:uppercase">OK</th>
+<th style="text-align:left;padding:6px 4px;color:var(--accent2);font-family:Orbitron;font-size:9px;text-transform:uppercase">Info</th>
+</tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 4px;color:var(--text)"><i class="fa-solid fa-pen-nib mr-1" style="color:#06b6d4"></i>Copywriting</td><td style="padding:5px 4px;text-align:center"><span style="color:#4ade80">&#10003;</span></td><td style="padding:5px 4px;color:var(--dim)">4 tools AI</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 4px;color:var(--text)"><i class="fa-solid fa-graduation-cap mr-1" style="color:#10b981"></i>Akademik</td><td style="padding:5px 4px;text-align:center"><span style="color:#4ade80">&#10003;</span></td><td style="padding:5px 4px;color:var(--dim)">5 tools AI</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 4px;color:var(--text)"><i class="fa-solid fa-image mr-1" style="color:#f59e0b"></i>Visual</td><td style="padding:5px 4px;text-align:center"><span style="color:#4ade80">&#10003;</span></td><td style="padding:5px 4px;color:var(--dim)">6 tools AI</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 4px;color:var(--text)"><i class="fa-solid fa-chart-line mr-1" style="color:#a78bfa"></i>Bisnis</td><td style="padding:5px 4px;text-align:center"><span style="color:#4ade80">&#10003;</span></td><td style="padding:5px 4px;color:var(--dim)">7 tools AI</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 4px;color:var(--text)"><i class="fa-solid fa-robot mr-1" style="color:#c084fc"></i>AI Chatbot</td><td style="padding:5px 4px;text-align:center"><span style="color:#4ade80">&#10003;</span></td><td style="padding:5px 4px;color:var(--dim)">Wiki + Google</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 4px;color:var(--text)"><i class="fa-solid fa-palette mr-1" style="color:#d8b4fe"></i>Tema SIRI</td><td style="padding:5px 4px;text-align:center"><span style="color:#4ade80">&#10003;</span></td><td style="padding:5px 4px;color:var(--dim)">8 tema</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 4px;color:var(--text)"><i class="fa-solid fa-hands-praying mr-1" style="color:#fbbf24"></i>Screensaver</td><td style="padding:5px 4px;text-align:center"><span style="color:#4ade80">&#10003;</span></td><td style="padding:5px 4px;color:var(--dim)">3D Earth + Doa</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 4px;color:var(--text)"><i class="fa-solid fa-volume-high mr-1" style="color:#10b981"></i>TTS Voice</td><td style="padding:5px 4px;text-align:center"><span style="color:#4ade80">&#10003;</span></td><td style="padding:5px 4px;color:var(--dim)">Text-to-Speech</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 4px;color:var(--text)"><i class="fa-solid fa-microphone mr-1" style="color:#ef4444"></i>Voice Input</td><td style="padding:5px 4px;text-align:center"><span style="color:#4ade80">&#10003;</span></td><td style="padding:5px 4px;color:var(--dim)">Speech Recognition</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 4px;color:var(--text)"><i class="fa-solid fa-globe mr-1" style="color:#06b6d4"></i>3D Earth BG</td><td style="padding:5px 4px;text-align:center"><span style="color:#4ade80">&#10003;</span></td><td style="padding:5px 4px;color:var(--dim)">Three.js orbit</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 4px;color:var(--text)"><i class="fa-solid fa-chevron-circle-right mr-1" style="color:#c084fc"></i>Float Toggle</td><td style="padding:5px 4px;text-align:center"><span style="color:#4ade80">&#10003;</span></td><td style="padding:5px 4px;color:var(--dim)">Hide/Show</td></tr>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 4px;color:var(--text)"><i class="fa-solid fa-lightbulb mr-1" style="color:#fbbf24"></i>Request Fitur</td><td style="padding:5px 4px;text-align:center"><span style="color:#4ade80">&#10003;</span></td><td style="padding:5px 4px;color:var(--dim)">Via WhatsApp</td></tr>
+</table>
 </div>
-<div class="mt-4 pt-3 border-t text-center text-xs" style="border-color:var(--border);color:var(--dim);font-family:Orbitron">PABRIK AI PRO v1.0 &copy; 2026 Mohamad Hartadi</div>
+</div>
+<div class="mt-4 pt-3 border-t" style="border-color:var(--border)">
+<div style="text-align:center">
+<div style="width:56px;height:56px;margin:0 auto 8px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bg2),var(--card));border:2px solid var(--accent);box-shadow:0 0 15px rgba(6,182,212,0.3)"><i class="fa-solid fa-user-astronaut text-2xl" style="color:var(--accent2)"></i></div>
+<h4 class="font-bold text-sm" style="font-family:Orbitron;color:var(--accent2)">MOHAMAD HARTADI</h4>
+<p class="text-[10px] mb-3" style="color:var(--dim);font-family:Rajdhani">Full-Stack Developer & AI Engineer</p>
+<div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
+<a href="https://facebook.com/m.hartadi" target="_blank" class="clink" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.4);color:#60a5fa"><i class="fa-brands fa-facebook"></i>Facebook</a>
+<a href="https://newbieonline7.blogspot.com/" target="_blank" class="clink" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);color:#fbbf24"><i class="fa-solid fa-blog"></i>Blog</a>
+<a href="https://wa.me/6282231036047" target="_blank" class="clink" style="background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);color:#4ade80"><i class="fa-brands fa-whatsapp"></i>WA 0822-310-3604</a>
+</div>
+</div>
+</div>
+<div class="mt-3 pt-3 border-t text-center text-xs" style="border-color:var(--border);color:var(--dim);font-family:Orbitron">PABRIK AI PRO v2.0 &copy; 2026</div>
 </div>
 </div>
 
@@ -230,7 +306,12 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:0}
 </div>
 </div>
 
-<button onclick="activateScreensaver()" class="fixed bottom-20 right-4 z-30 w-12 h-12 rounded-full border flex items-center justify-center transition-all hover:scale-110" style="background:var(--card);border-color:var(--border);color:#fbbf24;box-shadow:0 4px 20px rgba(0,0,0,0.3)" title="Screensaver"><i class="fa-solid fa-hands-praying text-lg"></i></button>
+<!-- FLOATING BUTTONS: Screensaver + Chatbot with hide/show -->
+<div id="floatContainer" style="position:fixed;bottom:80px;right:16px;z-index:30;display:flex;flex-direction:column;gap:10px;transition:all .3s">
+<button onclick="activateScreensaver()" class="w-12 h-12 rounded-full border flex items-center justify-center transition-all hover:scale-110" style="background:var(--card);border-color:var(--border);color:#fbbf24;box-shadow:0 4px 20px rgba(0,0,0,0.3)" title="Screensaver"><i class="fa-solid fa-hands-praying text-lg"></i></button>
+<button onclick="openChat()" id="floatChatBtn" class="w-12 h-12 rounded-full border flex items-center justify-center transition-all hover:scale-110" style="background:rgba(168,85,247,0.2);border-color:rgba(168,85,247,0.4);color:#c084fc;box-shadow:0 4px 20px rgba(168,85,247,0.3)" title="AI Chatbot"><i class="fa-solid fa-robot text-lg"></i></button>
+</div>
+<button id="floatToggle" onclick="toggleFloatButtons()" style="position:fixed;bottom:80px;right:4px;z-index:31;width:20px;height:48px;border-radius:8px 0 0 8px;border:1px solid var(--border);background:var(--card);color:var(--accent2);font-size:10px;font-weight:bold;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center" title="Hide/Show Buttons"><i class="fa-solid fa-chevron-right" id="floatToggleIcon"></i></button>
 <script>
 // 3D EARTH BACKGROUND
 function initBgEarth(){
@@ -321,13 +402,98 @@ resultDiv.classList.remove('hidden');
 resultDiv.className='tool-result';
 resultDiv.innerHTML='<div class="text-center"><span class="tool-loading"></span><br><span class="text-xs mt-2 block" style="color:var(--dim)">AI sedang men generate...</span></div>';
 document.getElementById('copyBtn').classList.add('hidden');
-var prompt=currentTool.pp+input+'\n\nBerikan hasil yang detail, profesional, dan siap pakai dalam Bahasa Indonesia.';
-// Try Gemini proxy first
-fetch('https://superagent-1258ff83.base44.app/functions/geminiProxy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:prompt})})
-.then(function(r){return r.json()}).then(function(d){
-var txt=d.text||d.response||d.output||null;
-if(txt){showToolResult(txt)}else{offlineResult(input)}
-}).catch(function(){offlineResult(input)});
+// Use Wikipedia + smart template approach
+generateWithWiki(input);
+}
+
+function generateWithWiki(input){
+var tool=currentTool;
+var query=encodeURIComponent(input);
+// Search Wikipedia ID first
+var wikiUrl='https://id.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&explaintext=1&titles='+query+'&format=json&origin=*';
+fetch(wikiUrl).then(function(r){return r.json()}).then(function(d){
+var wikiText='';
+try{
+var pages=d.query.pages;
+for(var k in pages){
+if(pages[k].extract&&pages[k].extract.length>50){
+wikiText=pages[k].extract;
+break;
+}
+}
+}catch(e){}
+// Also search by list=search
+if(!wikiText){
+var searchUrl='https://id.wikipedia.org/w/api.php?action=query&list=search&srsearch='+query+'&format=json&origin=*';
+fetch(searchUrl).then(function(r2){return r2.json()}).then(function(d2){
+if(d2.query&&d2.query.search&&d2.query.search.length>0){
+var topTitle=d2.query.search[0].title;
+var detailUrl='https://id.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&explaintext=1&titles='+encodeURIComponent(topTitle)+'&format=json&origin=*';
+fetch(detailUrl).then(function(r3){return r3.json()}).then(function(d3){
+var ext='';
+try{var p=d3.query.pages;for(var k in p){if(p[k].extract){ext=p[k].extract;break;}}}catch(e){}
+buildToolResult(tool,input,ext);
+}).catch(function(){buildToolResult(tool,input,'')});
+}else{
+buildToolResult(tool,input,'');
+}
+}).catch(function(){buildToolResult(tool,input,'')});
+}else{
+buildToolResult(tool,input,wikiText);
+}
+}).catch(function(){buildToolResult(tool,input,'')});
+}
+
+function buildToolResult(tool,input,wikiText){
+var result='--- HASIL AI: '+tool.name+' ---\n\n';
+result+='*INPUT:* '+input+'\n\n';
+// Add tool-specific template
+result+='*TEMPLATE PROFESSIONAL:*\n';
+result+=tool.pp+input+'\n\n';
+// Add Wikipedia reference if found
+if(wikiText&&wikiText.length>50){
+result+='*REFERENSI WIKIPEDIA:*\n';
+result+=wikiText.substring(0,800)+'\n\n';
+}
+// Add structured output based on tool category
+result+='*OUTPUT STRUKTUR:*\n\n';
+if(tool.cat==='copywriting'){
+result+='1. HEADLINE UTAMA:\n   [Tulis headline yang menarik perhatian tentang '+input+']\n\n';
+result+='2. SUB-HEADLINE:\n   [Tulis sub-headline yang menjelaskan manfaat utama]\n\n';
+result+='3. BODY COPY:\n   [Tulis 3-4 paragraf copywriting persuasif]\n\n';
+result+='4. CALL TO ACTION:\n   [Tulis ajakan bertindak yang kuat]\n\n';
+result+='5. HASHTAGS:\n   [5 hashtag relevan]';
+}else if(tool.cat==='akademik'){
+result+='1. LATAR BELAKANG:\n   [Konteks akademik tentang '+input+']\n\n';
+result+='2. PEMBAHASAN:\n   [Analisis mendalam dengan referensi]\n\n';
+result+='3. ARGUMENTASI:\n   [3-4 poin argumentasi yang mendukung]\n\n';
+result+='4. KESIMPULAN:\n   [Kesimpulan akademik]\n\n';
+result+='5. REFERENSI:\n   [Format referensi yang sesuai]';
+}else if(tool.cat==='visual'){
+result+='1. KONSEP VISUAL:\n   [Deskripsi konsep visual untuk '+input+']\n\n';
+result+='2. PALET WARNA:\n   [Saran 4-5 warna utama]\n\n';
+result+='3. LAYOUT/STRUKTUR:\n   [Struktur layout slide/desain]\n\n';
+result+='4. TIPOGRAFI:\n   [Saran font dan hierarki teks]\n\n';
+result+='5. ELEMEN DEKORATIF:\n   [Ikon, ilustrasi, atau elemen pendukung]';
+}else if(tool.cat==='bisnis'){
+result+='1. RINGKASAN EKSEKUTIF:\n   [Ringkasan singkat tentang '+input+']\n\n';
+result+='2. ANALISIS PASAR:\n   [Data dan tren pasar]\n\n';
+result+='3. STRATEGI BISNIS:\n   [3-4 strategi utama]\n\n';
+result+='4. PROYEKSI FINANSIAL:\n   [Estimasi biaya dan pendapatan]\n\n';
+result+='5. REKOMENDASI:\n   [Langkah selanjutnya yang konkret]';
+}else{
+result+='1. PENDAHULUAN:\n   [Pengenalan tentang '+input+']\n\n';
+result+='2. ISI UTAMA:\n   [Pembahasan detail]\n\n';
+result+='3. ANALISIS:\n   [Analisis komprehensif]\n\n';
+result+='4. KESIMPULAN:\n   [Kesimpulan dan rekomendasi]';
+}
+result+='\n\n--- SUMBER REFERENSI ---\n';
+result+='Wikipedia ID: https://id.wikipedia.org/wiki/Special:Search?search='+encodeURIComponent(input)+'\n';
+result+='Wikipedia EN: https://en.wikipedia.org/wiki/Special:Search?search='+encodeURIComponent(input)+'\n';
+result+='Google Search: https://www.google.com/search?q='+encodeURIComponent(input)+'\n';
+result+='Bing/Copilot: https://www.bing.com/search?q='+encodeURIComponent(input)+'\n';
+result+='\nCatatan: Hasil di atas adalah template AI. Untuk hasil maksimal, gunakan referensi tambahan dan sesuaikan dengan kebutuhan Anda.';
+showToolResult(result);
 }
 function showToolResult(txt){
 var resultDiv=document.getElementById('toolResult');
@@ -485,14 +651,56 @@ document.getElementById('chatView').classList.add('hidden');
 }
 
 // THEME
-function toggleTheme(){
+var siriThemes=[
+{id:'cyber',name:'Cyber Cyan',icon:'fa-microchip',color:'#06b6d4',desc:'Tema futuristik cyan default'},
+{id:'light',name:'Light Mode',icon:'fa-sun',color:'#0891b2',desc:'Mode terang untuk siang hari'},
+{id:'siri-purple',name:'Siri Purple',icon:'fa-wand-magic-sparkles',color:'#a855f7',desc:'Nuansa ungu elegan Siri'},
+{id:'siri-green',name:'Siri Green',icon:'fa-leaf',color:'#22c55e',desc:'Hijau segar menenangkan mata'},
+{id:'siri-sunset',name:'Siri Sunset',icon:'fa-mountain-sun',color:'#f97316',desc:'Oranye hangat seperti senja'},
+{id:'siri-rose',name:'Siri Rose',icon:'fa-heart',color:'#ec4899',desc:'Pink lembut penuh gaya'},
+{id:'siri-midnight',name:'Siri Midnight',icon:'fa-moon',color:'#3b82f6',desc:'Biru gelap elegan'},
+{id:'siri-mono',name:'Siri Mono',icon:'fa-circle-half-stroke',color:'#737373',desc:'Monokrom minimalis'}
+];
+function setTheme(themeId){
 var html=document.documentElement;
-if(html.classList.contains('light')){html.classList.remove('light');html.classList.add('dark');document.getElementById('themeIcon').className='fa-solid fa-moon text-sm';localStorage.setItem('pabrik_theme','dark')}
-else{html.classList.remove('dark');html.classList.add('light');document.getElementById('themeIcon').className='fa-solid fa-sun text-sm';localStorage.setItem('pabrik_theme','light')}
+html.removeAttribute('data-theme');
+html.setAttribute('data-theme',themeId);
+html.classList.remove('light','dark');
+if(themeId==='light'){html.classList.add('light')}else{html.classList.add('dark')}
+// Update theme icon based on selected theme
+var themeIcon=document.getElementById('themeIcon');
+var t=siriThemes.find(function(x){return x.id===themeId})||siriThemes[0];
+if(themeIcon){themeIcon.className='fa-solid '+t.icon+' text-sm'}
+localStorage.setItem('pabrik_theme',themeId);
+// Update theme button color
+var themeBtn=document.getElementById('themeBtn');
+if(themeBtn){themeBtn.style.color=t.color}
+}
+function toggleTheme(){
+var current=localStorage.getItem('pabrik_theme')||'cyber';
+// Toggle between dark and light
+if(current==='light'){setTheme('cyber')}else{setTheme('light')}
+}
+function openThemeSelector(){document.getElementById('themeModal').classList.add('active')}
+function closeThemeSelector(){document.getElementById('themeModal').classList.remove('active')}
+function renderThemeList(){
+var container=document.getElementById('themeList');
+if(!container)return;
+var current=localStorage.getItem('pabrik_theme')||'cyber';
+var html='';
+siriThemes.forEach(function(t){
+var active=t.id===current;
+html+='<div onclick="setTheme(\''+t.id+'\')" style="background:var(--card);border:2px solid '+(active?t.color:'var(--border)')+';border-radius:12px;padding:12px;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:10px;margin-bottom:8px'+(active?';box-shadow:0 0 15px '+t.color+'40':'')+'">';
+html+='<div style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:'+t.color+'20;border:1px solid '+t.color+'40"><i class="fa-solid '+t.icon+'" style="color:'+t.color+';font-size:14px"></i></div>';
+html+='<div style="flex:1"><div style="font-family:Orbitron;font-size:12px;font-weight:bold;color:var(--text)">'+t.name+(active?' <i class=\'fa-solid fa-check-circle\' style=\'color:'+t.color+'\'></i>':'')+'</div>';
+html+='<div style="font-size:10px;color:var(--dim);font-family:Rajdhani;margin-top:2px">'+t.desc+'</div></div>';
+html+='</div>';
+});
+container.innerHTML=html;
 }
 
 // MODALS
-function openHelp(){document.getElementById('helpModal').classList.add('active')}
+function openHelp(){document.getElementById('helpModal').classList.add('active');renderThemeList()}
 function closeHelp(){document.getElementById('helpModal').classList.remove('active')}
 function openProgrammer(){document.getElementById('progModal').classList.add('active')}
 function closeProgrammer(){document.getElementById('progModal').classList.remove('active')}
@@ -514,6 +722,16 @@ var wisdomData=[
 {cat:'PETUAH BIJAK',icon:'fa-seedling',text:'Bambu yang ditebang akan tumbuh kembali lebih banyak. Kekalahan hari ini adalah benih kemenangan esok hari.',source:'Petuah Bijak #5'},
 {cat:'MOTIVASI',icon:'fa-anchor',text:'Jangan jangkar di pelabuhan ketika Anda diciptakan untuk berlayar. Lautan luas menanti, angin pun bertiup. Berlayarlah!',source:'Motivasi #5'}
 ];
+function toggleFloatButtons(){
+var fc=document.getElementById('floatContainer');
+var ft=document.getElementById('floatToggle');
+var icon=document.getElementById('floatToggleIcon');
+if(fc.style.display==='none'){
+fc.style.display='flex';ft.style.right='4px';icon.className='fa-solid fa-chevron-right';
+}else{
+fc.style.display='none';ft.style.right='-4px';icon.className='fa-solid fa-chevron-left';
+}
+}
 var scIdx=0,scTimer=null,idleTimer=null;
 function activateScreensaver(){
 var el=document.getElementById('screensaver');if(!el)return;
@@ -588,8 +806,8 @@ loader.style.opacity='0';setTimeout(function(){loader.style.display='none'},700)
 }
 
 // INIT
-document.documentElement.classList.add('dark');
-if(localStorage.getItem('pabrik_theme')==='light'){document.documentElement.classList.remove('dark');document.documentElement.classList.add('light');document.getElementById('themeIcon').className='fa-solid fa-sun text-sm';}
+var savedTheme=localStorage.getItem('pabrik_theme')||'cyber';
+setTheme(savedTheme);
 renderTools('all');
 updateClock();setInterval(updateClock,1000);
 bootSequence();
